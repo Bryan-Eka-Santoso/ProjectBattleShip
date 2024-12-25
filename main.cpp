@@ -77,6 +77,21 @@ int main()
                                     } while (levelGame < 0 || levelGame > 3);
                                     system("cls");
 
+                                        switch(levelGame){
+                                            case 1:{
+
+                                            break;
+                                            }
+                                            case 2:{
+
+                                            break;
+                                            }
+                                            case 3:{
+
+                                            break;
+                                            }
+                                        }
+
                                 } while (levelGame != 0);
                             break;
                             }
