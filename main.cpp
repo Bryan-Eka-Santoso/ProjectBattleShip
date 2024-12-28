@@ -1,5 +1,6 @@
 #include <iostream>
 #include <conio.h>
+#include <windows.h>
 
 using namespace std;
 
@@ -51,6 +52,31 @@ void displayBoard(){
         cout << endl;
     }
 }
+
+void displayBoardPlay(int mapBattleShip[9][11]) {
+    for(int i = 0; i < 9; i++) {
+        if (i == 0 || i == 8) {
+            for (int j = 0; j < 11; j++) {
+                if(j == 0 || j == 10){
+                    cout << "   ";
+                } else {
+                    char letter = 'a' + j - 1;
+                    cout << " " << letter << " ";
+                }
+            }
+        } else {
+            for (int j = 0; j < 11; j++) {
+                if (mapBattleShip[i][j] == 1) {
+                    cout << " " << i << " ";
+                } else {
+                    cout << "[ ]";
+                }
+            }
+        }
+        cout << endl;
+    }
+}
+
 void gerakKapal(char gerak, int &x, int &y, int &shipLength, int modelsShip, bool &isHorizontal) {
     for (int i = 0; i < shipLength; i++) {
         if (isHorizontal) {
@@ -166,6 +192,7 @@ void gerakKapal(char gerak, int &x, int &y, int &shipLength, int modelsShip, boo
         }
     }
 }
+
 void spawnShip(int shipLength, int &x, int &y, int modelsShip, bool &isHorizontal){
     for(int i = 0; i < shipLength; i++){
         if (isHorizontal)
@@ -267,6 +294,7 @@ int main()
                                             break;
                                             }
                                             case 4:{
+                                                bool play = false;
                                                 do {
                                                     cout << "== You selected very hard difficulty ==" << endl;
                                                     cout << "Please set up the position your ship :" << endl;
@@ -275,12 +303,13 @@ int main()
                                                     cout << "3. " << "\033[33m***\033[0m" << " Cruiser" << endl;
                                                     cout << "4. " << "\033[34m****\033[0m" << " Battleship" << endl;
                                                     cout << "5. " << "\033[35m*****\033[0m" << " Carrier" << endl;
+                                                    cout << "6. Play Game" << endl;
                                                     cout << "0. Back" << endl;
 
                                                     do {
                                                         cout << ">> ";
                                                         cin >> selectShip;
-                                                    } while (selectShip < 0 || selectShip > 5);
+                                                    } while (selectShip < 0 || selectShip > 6);
                                                     system("cls");
 
                                                     bool done = false;
@@ -294,6 +323,9 @@ int main()
                                                                 displayBoard();
 
                                                                 cout << endl;
+                                                                cout << "Press w/a/s/d to move your ship" << endl;
+                                                                cout << "Press enter to save the position of ship" << endl;
+                                                                cout << "Press r to rotate your ship" << endl;
 
                                                                 gerak = getch();
 
@@ -316,6 +348,9 @@ int main()
                                                                 displayBoard();
 
                                                                 cout << endl;
+                                                                cout << "Press w/a/s/d to move your ship" << endl;
+                                                                cout << "Press enter to save the position of ship" << endl;
+                                                                cout << "Press r to rotate your ship" << endl;
 
                                                                 gerak = getch();
 
@@ -338,6 +373,9 @@ int main()
                                                                 displayBoard();
 
                                                                 cout << endl;
+                                                                cout << "Press w/a/s/d to move your ship" << endl;
+                                                                cout << "Press enter to save the position of ship" << endl;
+                                                                cout << "Press r to rotate your ship" << endl;
 
                                                                 gerak = getch();
 
@@ -360,6 +398,9 @@ int main()
                                                                 displayBoard();
 
                                                                 cout << endl;
+                                                                cout << "Press w/a/s/d to move your ship" << endl;
+                                                                cout << "Press enter to save the position of ship" << endl;
+                                                                cout << "Press r to rotate your ship" << endl;
 
                                                                 gerak = getch();
 
@@ -382,6 +423,9 @@ int main()
                                                                 displayBoard();
 
                                                                 cout << endl;
+                                                                cout << "Press w/a/s/d to move your ship" << endl;
+                                                                cout << "Press enter to save the position of ship" << endl;
+                                                                cout << "Press r to rotate your ship" << endl;
 
                                                                 gerak = getch();
 
@@ -395,13 +439,62 @@ int main()
                                                             } while (!done);
                                                         break;
                                                         }
+                                                        case 6:{
+                                                        int ctr = 0;
+
+                                                            for(int i = 0; i < 9; i++){
+                                                                for(int j = 0; j < 11; j++){
+                                                                    if(mapBattleShip[i][j] == 0){
+                                                                        ctr++;
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            if (ctr == 46){
+                                                                play = true;
+                                                            } else {
+                                                                cout << "Please set up all postiton your ship" << endl;
+                                                                Sleep(1000);
+                                                                system("cls");
+                                                            }
+                                                            break;
+                                                        }
                                                     }
-                                                } while (selectShip != 0);
+                                                } while (selectShip != 0 && !play);
+                                                system("cls");
+
+                                                if (play){
+                                                    cout << "== Welcome to the game battleship ==" << endl << endl;
+                                                    displayBoardPlay(mapBattleShip);
+                                                    cout << endl;
+                                                    displayBoardPlay(mapBattleShip);
+                                                    cout << endl;
+                                                }
                                             break;
                                             }
                                         }
                                 } while (levelGame != 0);
                             break;
+                            }
+                            case 2:{
+                                do {
+                                    cout << "== You selected 2 player game ==" << endl;
+                                    cout << "Please player 1 set up the position your ship :" << endl;
+                                    cout << "1. " << "\033[31m**\033[0m" << " Destroyer" << endl;
+                                    cout << "2. " << "\033[32m***\033[0m" << " Submarine" << endl;
+                                    cout << "3. " << "\033[33m***\033[0m" << " Cruiser" << endl;
+                                    cout << "4. " << "\033[34m****\033[0m" << " Battleship" << endl;
+                                    cout << "5. " << "\033[35m*****\033[0m" << " Carrier" << endl;
+                                    cout << "6. " << "Next to set up ship the player 2" << endl;
+                                    cout << "0. Back" << endl;
+
+                                    do {
+                                        cout << ">> ";
+                                        cin >> selectShip;
+                                    } while (selectShip < 0 || selectShip > 6);
+                                    system("cls");
+                                } while (selectShip != 0);
+                                break;
                             }
                         }
 
