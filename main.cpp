@@ -15,6 +15,7 @@ int cruiserY = 1, cruiserX = 1;
 int battleshipY = 1, battleshipX = 1;
 int carrierX = 1, carrierY = 1;
 int destroyer = 2, submarine = 3, cruiser = 4, battleship = 5, carrier = 6;
+bool isHrDestroyer = true, isHrSubmarine = true, isHrCruiser = true, isHrBattleship = true, isHrCarrier = true;
 
 int mapBattleShip[9][11] = {
     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -27,54 +28,6 @@ int mapBattleShip[9][11] = {
     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 };
-
-void gerakKapal(char gerak, int &x, int &y , int shipLength, int modelsShip){
-    for(int i = 0; i < shipLength; i++){
-        mapBattleShip[y][x + i] = 0;
-    }
-
-    if(gerak == 'w'){
-        bool canMove = true;
-
-        for (int i = 0; i < shipLength; i++) {
-            if (mapBattleShip[y - 1][x + i] != 0) {
-                canMove = false;
-                break;
-                }
-        }
-
-        if (canMove) {
-            y--;
-        }
-    } else if (gerak == 'a'){
-        if(mapBattleShip[y][x-1] == 0){
-            x--;
-        }
-    } else if (gerak == 's'){
-        bool canMove = true;
-
-        for (int i = 0; i < shipLength; i++) {
-            if (mapBattleShip[y + 1][x + i] != 0) {
-                canMove = false;
-                break;
-                }
-        }
-
-        if (canMove) {
-            y++;
-        }
-    } else if (gerak == 'd'){
-        if(mapBattleShip[y][x+shipLength] == 0){
-            x++;
-        }
-    } else if (gerak == 'r'){
-
-    }
-
-    for(int i = 0; i < shipLength; i++) {
-        mapBattleShip[y][x + i] = modelsShip;
-    }
-}
 
 void displayBoard(){
     for(int i = 0; i < 9; i++){
@@ -96,6 +49,129 @@ void displayBoard(){
             }
         }
         cout << endl;
+    }
+}
+void gerakKapal(char gerak, int &x, int &y, int &shipLength, int modelsShip, bool &isHorizontal) {
+    for (int i = 0; i < shipLength; i++) {
+        if (isHorizontal) {
+            mapBattleShip[y][x + i] = 0;
+        } else {
+            mapBattleShip[y + i][x] = 0;
+        }
+    }
+
+    if (gerak == 'w') {
+        bool canMove = true;
+        for (int i = 0; i < shipLength; i++) {
+            if (isHorizontal) {
+                if (mapBattleShip[y - 1][x + i] != 0) {
+                    canMove = false;
+                    break;
+                }
+            } else {
+                if (mapBattleShip[y - 1][x] != 0) {
+                    canMove = false;
+                    break;
+                }
+            }
+        }
+        if (canMove) {
+            y--;
+        }
+    } else if (gerak == 'a') {
+        bool canMove = true;
+        for (int i = 0; i < shipLength; i++) {
+            if (isHorizontal) {
+                if (mapBattleShip[y][x - 1] != 0) {
+                    canMove = false;
+                    break;
+                }
+            } else {
+                if (mapBattleShip[y + i][x - 1] != 0) {
+                    canMove = false;
+                    break;
+                }
+            }
+        }
+        if (canMove) {
+            x--;
+        }
+    } else if (gerak == 's') {
+        bool canMove = true;
+        for (int i = 0; i < shipLength; i++) {
+            if (isHorizontal) {
+                if (mapBattleShip[y + 1][x + i] != 0) {
+                    canMove = false;
+                    break;
+                }
+            } else {
+                if (mapBattleShip[y + shipLength][x] != 0) {
+                    canMove = false;
+                    break;
+                }
+            }
+        }
+        if (canMove) {
+            y++;
+        }
+    } else if (gerak == 'd') {
+        bool canMove = true;
+        for (int i = 0; i < shipLength; i++) {
+            if (isHorizontal) {
+                if (mapBattleShip[y][x + shipLength] != 0) {
+                    canMove = false;
+                    break;
+                }
+            } else {
+                if (mapBattleShip[y + i][x + 1] != 0) {
+                    canMove = false;
+                    break;
+                }
+            }
+        }
+        if (canMove) {
+            x++;
+        }
+    } else if (gerak == 'r') {
+        bool canRotate = true;
+
+        if (isHorizontal) {
+            for (int i = 0; i < shipLength; i++) {
+                if (y + i >= 11 || mapBattleShip[y + i][x] != 0) {
+                    canRotate = false;
+                    break;
+                }
+            }
+        } else {
+            for (int i = 0; i < shipLength; i++) {
+                if (x + i >= 9 || mapBattleShip[y][x + i] != 0) {
+                    canRotate = false;
+                    break;
+                }
+            }
+        }
+
+        if (canRotate) {
+            for (int i = 0; i < shipLength; i++)
+                mapBattleShip[y][x + i] = 0;
+            isHorizontal = !isHorizontal;
+        }
+    }
+
+    for (int i = 0; i < shipLength; i++) {
+        if (isHorizontal) {
+            mapBattleShip[y][x + i] = modelsShip;
+        } else {
+            mapBattleShip[y + i][x] = modelsShip;
+        }
+    }
+}
+void spawnShip(int shipLength, int &x, int &y, int modelsShip, bool &isHorizontal){
+    for(int i = 0; i < shipLength; i++){
+        if (isHorizontal)
+            mapBattleShip[y][x + i] = modelsShip;
+        else
+            mapBattleShip[y + i][x] = modelsShip;
     }
 }
 
@@ -211,9 +287,7 @@ int main()
                                                     switch(selectShip){
                                                         case 1:{
                                                             do {
-                                                                for(int i = 0; i < destroyerShipLength; i++){
-                                                                    mapBattleShip[destroyerY][destroyerX + i] = 2;
-                                                                }
+                                                                spawnShip(destroyerShipLength, destroyerX, destroyerY, destroyer, isHrDestroyer);
 
                                                                 cout << "== Destroyer Ship \033[31m**\033[0m ==" << endl << endl;
 
@@ -223,9 +297,9 @@ int main()
 
                                                                 gerak = getch();
 
-                                                                gerakKapal(gerak, destroyerX, destroyerY, destroyerShipLength, destroyer);
+                                                                gerakKapal(gerak, destroyerX, destroyerY, destroyerShipLength, destroyer, isHrDestroyer);
 
-                                                                if (gerak == 'e'){
+                                                                if (gerak == '\r'){
                                                                     done = true;
                                                                 }
 
@@ -235,9 +309,7 @@ int main()
                                                         }
                                                         case 2:{
                                                             do {
-                                                                for(int i = 0; i < submarineShipLength; i++){
-                                                                    mapBattleShip[submarineY][submarineX + i] = 3;
-                                                                }
+                                                                spawnShip(submarineShipLength, submarineX, submarineY, submarine, isHrSubmarine);
 
                                                                 cout << "== Submarine Ship \033[32m***\033[0m ==" << endl << endl;
 
@@ -247,9 +319,9 @@ int main()
 
                                                                 gerak = getch();
 
-                                                                gerakKapal(gerak, submarineX, submarineY, submarineShipLength, submarine);
+                                                                gerakKapal(gerak, submarineX, submarineY, submarineShipLength, submarine, isHrSubmarine);
 
-                                                                if (gerak == 'e'){
+                                                                if (gerak == '\r'){
                                                                     done = true;
                                                                 }
 
@@ -259,9 +331,7 @@ int main()
                                                         }
                                                         case 3:{
                                                             do {
-                                                                for(int i = 0; i < cruiserShipLength; i++){
-                                                                    mapBattleShip[cruiserY][cruiserX + i] = 4;
-                                                                }
+                                                                spawnShip(cruiserShipLength, cruiserX, cruiserY, cruiser, isHrCruiser);
 
                                                                 cout << "== Cruiser Ship \033[33m***\033[0m ==" << endl << endl;
 
@@ -271,9 +341,9 @@ int main()
 
                                                                 gerak = getch();
 
-                                                                gerakKapal(gerak, cruiserX, cruiserY, cruiserShipLength, cruiser);
+                                                                gerakKapal(gerak, cruiserX, cruiserY, cruiserShipLength, cruiser, isHrCruiser);
 
-                                                                if (gerak == 'e'){
+                                                                if (gerak == '\r'){
                                                                     done = true;
                                                                 }
 
@@ -283,9 +353,7 @@ int main()
                                                         }
                                                         case 4:{
                                                             do {
-                                                                for(int i = 0; i < battleshipShipLength; i++){
-                                                                    mapBattleShip[battleshipY][battleshipX + i] = 5;
-                                                                }
+                                                                spawnShip(battleshipShipLength, battleshipX, battleshipY, battleship, isHrBattleship);
 
                                                                 cout << "== Battle Ship \033[34m****\033[0m ==" << endl << endl;
 
@@ -295,9 +363,9 @@ int main()
 
                                                                 gerak = getch();
 
-                                                                gerakKapal(gerak, battleshipX, battleshipY, battleshipShipLength, battleship);
+                                                                gerakKapal(gerak, battleshipX, battleshipY, battleshipShipLength, battleship, isHrBattleship);
 
-                                                                if (gerak == 'e'){
+                                                                if (gerak == '\r'){
                                                                     done = true;
                                                                 }
 
@@ -307,9 +375,7 @@ int main()
                                                         }
                                                         case 5:{
                                                             do {
-                                                                for(int i = 0; i < carrierShipLength; i++){
-                                                                    mapBattleShip[carrierY][carrierX + i] = 6;
-                                                                }
+                                                                spawnShip(carrierShipLength, carrierX, carrierY, carrier, isHrCarrier);
 
                                                                 cout << "== Carrier Ship \033[35m*****\033[0m ==" << endl << endl;
 
@@ -319,9 +385,9 @@ int main()
 
                                                                 gerak = getch();
 
-                                                                gerakKapal(gerak, carrierX, carrierY, carrierShipLength, carrier);
+                                                                gerakKapal(gerak, carrierX, carrierY, carrierShipLength, carrier, isHrCarrier);
 
-                                                                if (gerak == 'e'){
+                                                                if (gerak == '\r'){
                                                                     done = true;
                                                                 }
 
