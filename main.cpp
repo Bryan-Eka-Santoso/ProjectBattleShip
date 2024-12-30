@@ -250,6 +250,22 @@ void spawnShip(int shipLength, int &x, int &y, int modelsShip, bool &isHorizonta
     }
 }
 
+void risetCoordinate(bool &isHr, int &x, int &y){
+    isHr = true;
+    x = 1;
+    y = 1;
+}
+
+void risetMap(int mapBattleShip[9][11]){
+    for(int i = 0; i < 9; i++){
+        for(int j = 0; j < 11; j++){
+            if(mapBattleShip[i][j] != 1 && mapBattleShip[i][j] != 0){
+                mapBattleShip[i][j] = 0;
+            }
+        }
+    }
+}
+
 
 int main()
 {
@@ -526,6 +542,13 @@ int main()
                             }
                             case 2:{
                                 bool play = false;
+                                risetCoordinate(isHrDestroyer, destroyerX, destroyerY);
+                                risetCoordinate(isHrSubmarine, submarineX, submarineY);
+                                risetCoordinate(isHrCruiser, cruiserX, cruiserY);
+                                risetCoordinate(isHrBattleship, battleshipX, battleshipY);
+                                risetCoordinate(isHrCarrier, carrierX, carrierY);
+                                risetMap(mapBattleShip);
+
                                 do {
                                     cout << "== You selected 2 player game ==" << endl;
                                     cout << "Please player 1 set up the position your ship :" << endl;
@@ -534,13 +557,14 @@ int main()
                                     cout << "3. " << "\033[33m***\033[0m" << " Cruiser" << endl;
                                     cout << "4. " << "\033[34m****\033[0m" << " Battleship" << endl;
                                     cout << "5. " << "\033[35m*****\033[0m" << " Carrier" << endl;
-                                    cout << "6. " << "Next to set up ship the player 2" << endl;
+                                    cout << "6. " << "Set map with random the position ship" << endl;
+                                    cout << "7. " << "Next to set up ship the player 2" << endl;
                                     cout << "0. Back" << endl;
 
                                     do {
                                         cout << ">> ";
                                         cin >> selectShip;
-                                    } while (selectShip < 0 || selectShip > 6);
+                                    } while (selectShip < 0 || selectShip > 7);
                                     system("cls");
 
                                     bool done = false;
@@ -671,6 +695,19 @@ int main()
                                         break;
                                         }
                                         case 6:{
+                                        do {
+                                            cout << "== Set map with random the position ship" << endl;
+
+                                            displayBoard(mapBattleShip);
+
+                                            // randomMap();
+
+                                            cout << endl;
+                                            cout << "Press r to random the position ship again" << endl;
+                                        } while (!done);
+                                        break;
+                                        }
+                                        case 7:{
                                         int ctr = 0;
 
                                             for(int i = 0; i < 9; i++){
@@ -696,12 +733,13 @@ int main()
 
                                 if (play){
                                     play = false;
-                                    int destroyerY = 1, destroyerX = 1;
-                                    int submarineY = 1, submarineX = 1;
-                                    int cruiserY = 1, cruiserX = 1;
-                                    int battleshipY = 1, battleshipX = 1;
-                                    int carrierX = 1, carrierY = 1;
-                                    bool isHrDestroyer = true, isHrSubmarine = true, isHrCruiser = true, isHrBattleship = true, isHrCarrier = true;
+                                    risetCoordinate(isHrDestroyer, destroyerX, destroyerY);
+                                    risetCoordinate(isHrSubmarine, submarineX, submarineY);
+                                    risetCoordinate(isHrCruiser, cruiserX, cruiserY);
+                                    risetCoordinate(isHrBattleship, battleshipX, battleshipY);
+                                    risetCoordinate(isHrCarrier, carrierX, carrierY);
+                                    risetMap(mapBattleShip2);
+
                                     do {
                                         cout << "== You selected 2 player game ==" << endl;
                                         cout << "Please player 2 set up the position your ship :" << endl;
@@ -710,13 +748,14 @@ int main()
                                         cout << "3. " << "\033[33m***\033[0m" << " Cruiser" << endl;
                                         cout << "4. " << "\033[34m****\033[0m" << " Battleship" << endl;
                                         cout << "5. " << "\033[35m*****\033[0m" << " Carrier" << endl;
-                                        cout << "6. " << "Play Game" << endl;
+                                        cout << "6. " << "Set map with random the position ship" << endl;
+                                        cout << "7. " << "Play Game" << endl;
                                         cout << "0. Back" << endl;
 
                                     do {
                                         cout << ">> ";
                                         cin >> selectShip;
-                                    } while (selectShip < 0 || selectShip > 6);
+                                    } while (selectShip < 0 || selectShip > 7);
                                     system("cls");
 
                                     bool done = false;
@@ -847,6 +886,10 @@ int main()
                                         break;
                                         }
                                         case 6:{
+
+                                        break;
+                                        }
+                                        case 7:{
                                         int ctr = 0;
 
                                             for(int i = 0; i < 9; i++){
@@ -882,15 +925,18 @@ int main()
                                             }
                                             cout << endl;
                                             if (ctr % 2 == 1){
-                                                ctr++;
                                                 displayBoardPlayC(mapBattleShip2);
                                             } else {
-                                                ctr++;
                                                 displayBoardPlay(mapBattleShip2);
                                             }
 
                                             playInGame = getch();
-                                        system("cls");
+
+                                            if(playInGame == 'c'){
+                                                ctr++;
+                                            }
+
+                                            system("cls");
                                         } while (playInGame != 's');
                                     }
                                 }
