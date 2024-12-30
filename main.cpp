@@ -1,6 +1,11 @@
 #include <iostream>
 #include <conio.h>
 #include <windows.h>
+#include <fstream>
+#include <vector>
+#include <iomanip>
+#include <sstream>
+#include <ctime>
 
 using namespace std;
 
@@ -250,6 +255,110 @@ void spawnShip(int shipLength, int &x, int &y, int modelsShip, bool &isHorizonta
     }
 }
 
+void saveScore(string playerName, int score) {
+    vector<string> names;
+    vector<int> scores;
+    vector<string> dates;
+
+    time_t now = time(0);
+    tm* ltm = localtime(&now);
+    string date = to_string(1900 + ltm->tm_year) + "/" +
+                 to_string(1 + ltm->tm_mon) + "/" +
+                 to_string(ltm->tm_mday);
+
+    ifstream readFile("leaderboard.txt");
+    string line;
+
+    if (readFile.is_open()) {
+        string name;
+        int scr;
+        string dt;
+        while (readFile >> name >> scr >> dt) {
+            names.push_back(name);
+            scores.push_back(scr);
+            dates.push_back(dt);
+        }
+        readFile.close();
+    }
+
+    // nambah score
+    names.push_back(playerName);
+    scores.push_back(score);
+    dates.push_back(date);
+
+    // di atur
+    for (int i = 0; i < scores.size() - 1; i++) {
+        for (int j = 0; j < scores.size() - i - 1; j++) {
+            if (scores[j] < scores[j + 1]) {
+                // swap scor
+                int tempScore = scores[j];
+                scores[j] = scores[j + 1];
+                scores[j + 1] = tempScore;
+
+                // swap nama
+                string tempName = names[j];
+                names[j] = names[j + 1];
+                names[j + 1] = tempName;
+
+                // swap tanggal
+                string tempDate = dates[j];
+                dates[j] = dates[j + 1];
+                dates[j + 1] = tempDate;
+            }
+        }
+    }
+
+    if (names.size() > 10) {
+        names.resize(10);
+        scores.resize(10);
+        dates.resize(10);
+    }
+
+    ofstream writeFile("leaderboard.txt");
+    if (writeFile.is_open()) {
+        for (int i = 0; i < names.size(); i++) {
+            writeFile << names[i] << " " << scores[i] << " " << dates[i] << endl;
+        }
+        writeFile.close();
+    }
+}
+
+void displayLeaderboard() {
+    vector<string> names;
+    vector<int> scores;
+    vector<string> dates;
+
+    ifstream readFile("leaderboard.txt");
+    if (readFile.is_open()) {
+        string name;
+        int score;
+        string date;
+        while (readFile >> name >> score >> date) {
+            names.push_back(name);
+            scores.push_back(score);
+            dates.push_back(date);
+        }
+        readFile.close();
+    }
+
+    cout << "\n=== BATTLESHIP LEADERBOARD ===" << endl;
+    cout << "\nRank  Player Name      Score    Date" << endl;
+    cout << "----------------------------------------" << endl;
+
+    for (int i = 0; i < names.size(); i++) {
+        cout << left << setw(6) << i + 1
+             << setw(16) << names[i]
+             << setw(9) << scores[i]
+             << dates[i] << endl;
+    }
+
+    if (names.empty()) {
+        cout << "\nNo scores yet!" << endl;
+    }
+
+    cout << "\nPress any key to continue..." << endl;
+    getch();
+}
 
 int main()
 {
@@ -316,6 +425,12 @@ int main()
                         switch(menuPlayGame){
                             case 1:{
                                 do {
+
+                                    string playerName;
+                                    cout << "Enter your name: ";
+                                    cin >> playerName;
+                                    system("cls");
+
                                     cout << "== Choose The Difficulty ==" << endl;
                                     cout << "1. Easy" << endl;
                                     cout << "2. Medium" << endl;
@@ -522,6 +637,7 @@ int main()
                                             }
                                         }
                                 } while (levelGame != 0);
+
                             break;
                             }
                             case 2:{
@@ -902,7 +1018,10 @@ int main()
             break;
             }
             case 2:{
-                cout << "Leaderboard" << endl;
+
+                displayLeaderboard();
+                system("cls");
+
             break;
             }
             case 3:{
