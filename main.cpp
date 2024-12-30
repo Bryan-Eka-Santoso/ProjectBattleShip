@@ -1,6 +1,9 @@
 #include <iostream>
 #include <conio.h>
 #include <windows.h>
+#include <vector>
+#include <cstdlib>
+#include <ctime>
 
 using namespace std;
 
@@ -32,6 +35,18 @@ int mapBattleShip[9][11] = {
 };
 
 int mapBattleShip2[9][11] = {
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+};
+
+int mapBattleShipAi[9][11] = {
     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
     {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
@@ -250,6 +265,115 @@ void spawnShip(int shipLength, int &x, int &y, int modelsShip, bool &isHorizonta
     }
 }
 
+void deployShip(string name, char colorCode, int shipLength, int mapBatShip[9][11]){
+    cout << "== " << name << " Ship \033[3" << colorCode << "m";
+    for (int i = 0; i < shipLength; i++){
+        cout << "*";
+    }
+    cout << "\033[0m ==" << endl << endl;
+    displayBoard(mapBatShip);
+    cout << endl;
+    cout << "Press w/a/s/d to move your ship" << endl;
+    cout << "Press enter to save the position of ship" << endl;
+    cout << "Press r to rotate your ship" << endl;
+    cout << "Press c to randomize" << endl;
+}
+
+void displayMenu (int selectedOption, vector<string> &menu){
+    for (int i = 0; i < menu.size(); i++) {
+        if (i == selectedOption) {
+            cout << "> " << menu[i] << endl;
+        } else {
+            cout << "  " << menu[i] << endl;
+        }
+    }
+}
+
+void shipRandomizedDeployer(int &x, int &y, int shipLength, int modelShip, int mapBatShip[9][11], string name, bool &isHr){
+    bool canDeploy = false;
+    int randomX;
+    int randomY;
+    int randomRotate;
+
+    while (!canDeploy){
+        canDeploy = true;
+
+        randomX = 1 + rand() % 9;
+        randomY = 1 + rand() % 7;
+        randomRotate = rand() % 2;
+
+        cout << "Rotate: " << randomRotate << ", Coordinates: " << randomX << " and " << randomY << " of " << name << endl;
+        Sleep(200);
+
+        for (int i = 0; i < shipLength; i++){
+            if (randomRotate == 1){
+                isHr = false;
+            }
+            if (isHr){
+                if (randomX + i >= 10 || mapBatShip[randomY][randomX + i] != 0){
+                    canDeploy = false;
+                    cout << "Failed attempt" << " of " << name << endl;
+                    Sleep(200);
+                    break;
+                }
+            } else {
+                if (randomY + i >= 8 || mapBatShip[randomY + i][randomX] != 0){
+                    canDeploy = false;
+                    cout << "Failed attempt" << " of " << name << endl;
+                    Sleep(200);
+                    break;
+                }
+            }
+        }
+        if (canDeploy){
+            cout << "Placing ship" << " of " << name << endl;
+            Sleep(200);
+            x = randomX;
+            y = randomY;
+            for (int i = 0; i < shipLength; i++){
+                if (isHr)
+                    mapBatShip[y][x + i] = modelShip;
+                else
+                    mapBatShip[y + i][x] = modelShip;
+            }
+        }
+    }
+}
+
+void shipRandomizer(int mapBatShip[9][11]){
+    for (int i = 1; i < 8; i++){
+        for (int j = 1; j < 10; j++){
+            if (mapBatShip[i][j] == 2 || mapBatShip[i][j] == 3 || mapBatShip[i][j] == 4 || mapBatShip[i][j] == 5 || mapBatShip[i][j] == 6)
+                mapBatShip[i][j] = 0;
+        }
+    }
+    isHrDestroyer = true; isHrSubmarine = true; isHrCruiser = true; isHrBattleship = true; isHrCarrier = true;
+
+    shipRandomizedDeployer(destroyerX, destroyerY, destroyerShipLength, destroyer, mapBattleShip, "Destroyer", isHrDestroyer);
+    shipRandomizedDeployer(submarineX, submarineY, submarineShipLength, submarine, mapBattleShip, "Submarine", isHrSubmarine);
+    shipRandomizedDeployer(cruiserX, cruiserY, cruiserShipLength, cruiser, mapBattleShip, "Cruiser", isHrCruiser);
+    shipRandomizedDeployer(battleshipX, battleshipY, battleshipShipLength, battleship, mapBattleShip, "Battleship", isHrBattleship);
+    shipRandomizedDeployer(carrierX, carrierY, carrierShipLength, carrier, mapBattleShip, "Carrier", isHrCarrier);
+    system("pause");
+}
+
+
+
+void deployAndOperateShip(char gerak, char colorCode, int shipLength, int &x, int &y, int modelShip, bool &isHorizontal, bool &done, int mapBattleShip[9][11], string name){
+    srand(time(0));
+
+    spawnShip(shipLength, x, y, modelShip, isHorizontal, mapBattleShip);
+    deployShip(name, colorCode, shipLength, mapBattleShip);
+    gerak = getch();
+    gerakKapal(gerak, x, y, shipLength, modelShip, isHorizontal, mapBattleShip);
+    if (gerak == '\r'){
+        done = true;
+
+    } else if (gerak == 'c'){
+        shipRandomizer(mapBattleShip);
+    }
+    system("cls");
+}
 
 int main()
 {
@@ -351,7 +475,8 @@ int main()
                                                     cout << "3. " << "\033[33m***\033[0m" << " Cruiser" << endl;
                                                     cout << "4. " << "\033[34m****\033[0m" << " Battleship" << endl;
                                                     cout << "5. " << "\033[35m*****\033[0m" << " Carrier" << endl;
-                                                    cout << "6. Play Game" << endl;
+                                                    cout << "6. Random Map" << endl;
+                                                    cout << "7. PLay Game" << endl;
                                                     cout << "0. Back" << endl;
 
                                                     do {
@@ -364,126 +489,31 @@ int main()
                                                     switch(selectShip){
                                                         case 1:{
                                                             do {
-                                                                spawnShip(destroyerShipLength, destroyerX, destroyerY, destroyer, isHrDestroyer, mapBattleShip);
-
-                                                                cout << "== Destroyer Ship \033[31m**\033[0m ==" << endl << endl;
-
-                                                                displayBoard(mapBattleShip);
-
-                                                                cout << endl;
-                                                                cout << "Press w/a/s/d to move your ship" << endl;
-                                                                cout << "Press enter to save the position of ship" << endl;
-                                                                cout << "Press r to rotate your ship" << endl;
-
-                                                                gerak = getch();
-
-                                                                gerakKapal(gerak, destroyerX, destroyerY, destroyerShipLength, destroyer, isHrDestroyer, mapBattleShip);
-
-                                                                if (gerak == '\r'){
-                                                                    done = true;
-                                                                }
-
-                                                            system("cls");
+                                                                deployAndOperateShip(gerak, '1', destroyerShipLength, destroyerX, destroyerY, destroyer, isHrDestroyer, done, mapBattleShip, "Destroyer");
                                                             } while (!done);
                                                         break;
                                                         }
                                                         case 2:{
                                                             do {
-                                                                spawnShip(submarineShipLength, submarineX, submarineY, submarine, isHrSubmarine, mapBattleShip);
-
-                                                                cout << "== Submarine Ship \033[32m***\033[0m ==" << endl << endl;
-
-                                                                displayBoard(mapBattleShip);
-
-                                                                cout << endl;
-                                                                cout << "Press w/a/s/d to move your ship" << endl;
-                                                                cout << "Press enter to save the position of ship" << endl;
-                                                                cout << "Press r to rotate your ship" << endl;
-
-                                                                gerak = getch();
-
-                                                                gerakKapal(gerak, submarineX, submarineY, submarineShipLength, submarine, isHrSubmarine, mapBattleShip);
-
-                                                                if (gerak == '\r'){
-                                                                    done = true;
-                                                                }
-
-                                                            system("cls");
+                                                                deployAndOperateShip(gerak, '2', submarineShipLength, submarineX, submarineY, submarine, isHrSubmarine, done, mapBattleShip, "Submarine");
                                                             } while (!done);
                                                         break;
                                                         }
                                                         case 3:{
                                                             do {
-                                                                spawnShip(cruiserShipLength, cruiserX, cruiserY, cruiser, isHrCruiser, mapBattleShip);
-
-                                                                cout << "== Cruiser Ship \033[33m***\033[0m ==" << endl << endl;
-
-                                                                displayBoard(mapBattleShip);
-
-                                                                cout << endl;
-                                                                cout << "Press w/a/s/d to move your ship" << endl;
-                                                                cout << "Press enter to save the position of ship" << endl;
-                                                                cout << "Press r to rotate your ship" << endl;
-
-                                                                gerak = getch();
-
-                                                                gerakKapal(gerak, cruiserX, cruiserY, cruiserShipLength, cruiser, isHrCruiser, mapBattleShip);
-
-                                                                if (gerak == '\r'){
-                                                                    done = true;
-                                                                }
-
-                                                            system("cls");
+                                                                deployAndOperateShip(gerak, '3', cruiserShipLength, cruiserX, cruiserY, cruiser, isHrCruiser, done, mapBattleShip, "Cruiser");
                                                             } while (!done);
                                                         break;
                                                         }
                                                         case 4:{
                                                             do {
-                                                                spawnShip(battleshipShipLength, battleshipX, battleshipY, battleship, isHrBattleship, mapBattleShip);
-
-                                                                cout << "== Battle Ship \033[34m****\033[0m ==" << endl << endl;
-
-                                                                displayBoard(mapBattleShip);
-
-                                                                cout << endl;
-                                                                cout << "Press w/a/s/d to move your ship" << endl;
-                                                                cout << "Press enter to save the position of ship" << endl;
-                                                                cout << "Press r to rotate your ship" << endl;
-
-                                                                gerak = getch();
-
-                                                                gerakKapal(gerak, battleshipX, battleshipY, battleshipShipLength, battleship, isHrBattleship, mapBattleShip);
-
-                                                                if (gerak == '\r'){
-                                                                    done = true;
-                                                                }
-
-                                                            system("cls");
+                                                                deployAndOperateShip(gerak, '4', battleshipShipLength, battleshipX, battleshipY, battleship, isHrBattleship, done, mapBattleShip, "Battle");
                                                             } while (!done);
                                                         break;
                                                         }
                                                         case 5:{
                                                             do {
-                                                                spawnShip(carrierShipLength, carrierX, carrierY, carrier, isHrCarrier, mapBattleShip);
-
-                                                                cout << "== Carrier Ship \033[35m*****\033[0m ==" << endl << endl;
-
-                                                                displayBoard(mapBattleShip);
-
-                                                                cout << endl;
-                                                                cout << "Press w/a/s/d to move your ship" << endl;
-                                                                cout << "Press enter to save the position of ship" << endl;
-                                                                cout << "Press r to rotate your ship" << endl;
-
-                                                                gerak = getch();
-
-                                                                gerakKapal(gerak, carrierX, carrierY, carrierShipLength, carrier, isHrCarrier, mapBattleShip);
-
-                                                                if (gerak == '\r'){
-                                                                    done = true;
-                                                                }
-
-                                                            system("cls");
+                                                                deployAndOperateShip(gerak, '5', carrierShipLength, carrierX, carrierY, carrier, isHrCarrier, done, mapBattleShip, "Carrier");
                                                             } while (!done);
                                                         break;
                                                         }
@@ -527,14 +557,14 @@ int main()
                             case 2:{
                                 bool play = false;
                                 do {
-                                    cout << "== You selected 2 player game ==" << endl;
+                                    cout << "== Battle Ship Versus Mode ==" << endl;
                                     cout << "Please player 1 set up the position your ship :" << endl;
                                     cout << "1. " << "\033[31m**\033[0m" << " Destroyer" << endl;
                                     cout << "2. " << "\033[32m***\033[0m" << " Submarine" << endl;
                                     cout << "3. " << "\033[33m***\033[0m" << " Cruiser" << endl;
                                     cout << "4. " << "\033[34m****\033[0m" << " Battleship" << endl;
                                     cout << "5. " << "\033[35m*****\033[0m" << " Carrier" << endl;
-                                    cout << "6. " << "Next to set up ship the player 2" << endl;
+                                    cout << "6. " << "Finish" << endl;
                                     cout << "0. Back" << endl;
 
                                     do {
@@ -547,126 +577,31 @@ int main()
                                     switch(selectShip){
                                         case 1:{
                                             do {
-                                                spawnShip(destroyerShipLength, destroyerX, destroyerY, destroyer, isHrDestroyer, mapBattleShip);
-
-                                                cout << "== Destroyer Ship \033[31m**\033[0m ==" << endl << endl;
-
-                                                displayBoard(mapBattleShip);
-
-                                                cout << endl;
-                                                cout << "Press w/a/s/d to move your ship" << endl;
-                                                cout << "Press enter to save the position of ship" << endl;
-                                                cout << "Press r to rotate your ship" << endl;
-
-                                                gerak = getch();
-
-                                                gerakKapal(gerak, destroyerX, destroyerY, destroyerShipLength, destroyer, isHrDestroyer, mapBattleShip);
-
-                                                if (gerak == '\r'){
-                                                    done = true;
-                                                }
-
-                                            system("cls");
+                                                deployAndOperateShip(gerak, '1', destroyerShipLength, destroyerX, destroyerY, destroyer, isHrDestroyer, done, mapBattleShip, "Destroyer");
                                             } while (!done);
                                         break;
                                         }
                                         case 2:{
                                             do {
-                                                spawnShip(submarineShipLength, submarineX, submarineY, submarine, isHrSubmarine, mapBattleShip);
-
-                                                cout << "== Submarine Ship \033[32m***\033[0m ==" << endl << endl;
-
-                                                displayBoard(mapBattleShip);
-
-                                                cout << endl;
-                                                cout << "Press w/a/s/d to move your ship" << endl;
-                                                cout << "Press enter to save the position of ship" << endl;
-                                                cout << "Press r to rotate your ship" << endl;
-
-                                                gerak = getch();
-
-                                                gerakKapal(gerak, submarineX, submarineY, submarineShipLength, submarine, isHrSubmarine, mapBattleShip);
-
-                                                if (gerak == '\r'){
-                                                    done = true;
-                                                }
-
-                                            system("cls");
+                                                deployAndOperateShip(gerak, '2', submarineShipLength, submarineX, submarineY, submarine, isHrSubmarine, done, mapBattleShip, "Submarine");
                                             } while (!done);
                                         break;
                                         }
                                         case 3:{
                                             do {
-                                                spawnShip(cruiserShipLength, cruiserX, cruiserY, cruiser, isHrCruiser, mapBattleShip);
-
-                                                cout << "== Cruiser Ship \033[33m***\033[0m ==" << endl << endl;
-
-                                                displayBoard(mapBattleShip);
-
-                                                cout << endl;
-                                                cout << "Press w/a/s/d to move your ship" << endl;
-                                                cout << "Press enter to save the position of ship" << endl;
-                                                cout << "Press r to rotate your ship" << endl;
-
-                                                gerak = getch();
-
-                                                gerakKapal(gerak, cruiserX, cruiserY, cruiserShipLength, cruiser, isHrCruiser, mapBattleShip);
-
-                                                if (gerak == '\r'){
-                                                    done = true;
-                                                }
-
-                                            system("cls");
+                                                deployAndOperateShip(gerak, '3', cruiserShipLength, cruiserX, cruiserY, cruiser, isHrCruiser, done, mapBattleShip, "Cruiser");
                                             } while (!done);
                                         break;
                                         }
                                         case 4:{
                                             do {
-                                                spawnShip(battleshipShipLength, battleshipX, battleshipY, battleship, isHrBattleship, mapBattleShip);
-
-                                                cout << "== Battle Ship \033[34m****\033[0m ==" << endl << endl;
-
-                                                displayBoard(mapBattleShip);
-
-                                                cout << endl;
-                                                cout << "Press w/a/s/d to move your ship" << endl;
-                                                cout << "Press enter to save the position of ship" << endl;
-                                                cout << "Press r to rotate your ship" << endl;
-
-                                                gerak = getch();
-
-                                                gerakKapal(gerak, battleshipX, battleshipY, battleshipShipLength, battleship, isHrBattleship, mapBattleShip);
-
-                                                if (gerak == '\r'){
-                                                    done = true;
-                                                }
-
-                                            system("cls");
+                                                deployAndOperateShip(gerak, '4', battleshipShipLength, battleshipX, battleshipY, battleship, isHrBattleship, done, mapBattleShip, "Battle");
                                             } while (!done);
                                         break;
                                         }
                                         case 5:{
                                             do {
-                                                spawnShip(carrierShipLength, carrierX, carrierY, carrier, isHrCarrier, mapBattleShip);
-
-                                                cout << "== Carrier Ship \033[35m*****\033[0m ==" << endl << endl;
-
-                                                displayBoard(mapBattleShip);
-
-                                                cout << endl;
-                                                cout << "Press w/a/s/d to move your ship" << endl;
-                                                cout << "Press enter to save the position of ship" << endl;
-                                                cout << "Press r to rotate your ship" << endl;
-
-                                                gerak = getch();
-
-                                                gerakKapal(gerak, carrierX, carrierY, carrierShipLength, carrier, isHrCarrier, mapBattleShip);
-
-                                                if (gerak == '\r'){
-                                                    done = true;
-                                                }
-
-                                            system("cls");
+                                                deployAndOperateShip(gerak, '5', carrierShipLength, carrierX, carrierY, carrier, isHrCarrier, done, mapBattleShip, "Carrier");
                                             } while (!done);
                                         break;
                                         }
@@ -703,14 +638,14 @@ int main()
                                     int carrierX = 1, carrierY = 1;
                                     bool isHrDestroyer = true, isHrSubmarine = true, isHrCruiser = true, isHrBattleship = true, isHrCarrier = true;
                                     do {
-                                        cout << "== You selected 2 player game ==" << endl;
+                                        cout << "== Battle Ship Versus Mode ==" << endl;
                                         cout << "Please player 2 set up the position your ship :" << endl;
                                         cout << "1. " << "\033[31m**\033[0m" << " Destroyer" << endl;
                                         cout << "2. " << "\033[32m***\033[0m" << " Submarine" << endl;
                                         cout << "3. " << "\033[33m***\033[0m" << " Cruiser" << endl;
                                         cout << "4. " << "\033[34m****\033[0m" << " Battleship" << endl;
                                         cout << "5. " << "\033[35m*****\033[0m" << " Carrier" << endl;
-                                        cout << "6. " << "Play Game" << endl;
+                                        cout << "6. " << "Finish" << endl;
                                         cout << "0. Back" << endl;
 
                                     do {
@@ -723,126 +658,31 @@ int main()
                                     switch(selectShip){
                                         case 1:{
                                             do {
-                                                spawnShip(destroyerShipLength, destroyerX, destroyerY, destroyer, isHrDestroyer, mapBattleShip2);
-
-                                                cout << "== Destroyer Ship \033[31m**\033[0m ==" << endl << endl;
-
-                                                displayBoard(mapBattleShip2);
-
-                                                cout << endl;
-                                                cout << "Press w/a/s/d to move your ship" << endl;
-                                                cout << "Press enter to save the position of ship" << endl;
-                                                cout << "Press r to rotate your ship" << endl;
-
-                                                gerak = getch();
-
-                                                gerakKapal(gerak, destroyerX, destroyerY, destroyerShipLength, destroyer, isHrDestroyer, mapBattleShip2);
-
-                                                if (gerak == '\r'){
-                                                    done = true;
-                                                }
-
-                                            system("cls");
+                                                deployAndOperateShip(gerak, '1', destroyerShipLength, destroyerX, destroyerY, destroyer, isHrDestroyer, done, mapBattleShip2, "Destroyer");
                                             } while (!done);
                                         break;
                                         }
                                         case 2:{
                                             do {
-                                                spawnShip(submarineShipLength, submarineX, submarineY, submarine, isHrSubmarine, mapBattleShip2);
-
-                                                cout << "== Submarine Ship \033[32m***\033[0m ==" << endl << endl;
-
-                                                displayBoard(mapBattleShip2);
-
-                                                cout << endl;
-                                                cout << "Press w/a/s/d to move your ship" << endl;
-                                                cout << "Press enter to save the position of ship" << endl;
-                                                cout << "Press r to rotate your ship" << endl;
-
-                                                gerak = getch();
-
-                                                gerakKapal(gerak, submarineX, submarineY, submarineShipLength, submarine, isHrSubmarine, mapBattleShip2);
-
-                                                if (gerak == '\r'){
-                                                    done = true;
-                                                }
-
-                                            system("cls");
+                                                deployAndOperateShip(gerak, '2', submarineShipLength, submarineX, submarineY, submarine, isHrSubmarine, done, mapBattleShip2, "Submarine");
                                             } while (!done);
                                         break;
                                         }
                                         case 3:{
                                             do {
-                                                spawnShip(cruiserShipLength, cruiserX, cruiserY, cruiser, isHrCruiser, mapBattleShip2);
-
-                                                cout << "== Cruiser Ship \033[33m***\033[0m ==" << endl << endl;
-
-                                                displayBoard(mapBattleShip2);
-
-                                                cout << endl;
-                                                cout << "Press w/a/s/d to move your ship" << endl;
-                                                cout << "Press enter to save the position of ship" << endl;
-                                                cout << "Press r to rotate your ship" << endl;
-
-                                                gerak = getch();
-
-                                                gerakKapal(gerak, cruiserX, cruiserY, cruiserShipLength, cruiser, isHrCruiser, mapBattleShip2);
-
-                                                if (gerak == '\r'){
-                                                    done = true;
-                                                }
-
-                                            system("cls");
+                                                deployAndOperateShip(gerak, '3', cruiserShipLength, cruiserX, cruiserY, cruiser, isHrCruiser, done, mapBattleShip2, "Cruiser");
                                             } while (!done);
                                         break;
                                         }
                                         case 4:{
                                             do {
-                                                spawnShip(battleshipShipLength, battleshipX, battleshipY, battleship, isHrBattleship, mapBattleShip2);
-
-                                                cout << "== Battle Ship \033[34m****\033[0m ==" << endl << endl;
-
-                                                displayBoard(mapBattleShip2);
-
-                                                cout << endl;
-                                                cout << "Press w/a/s/d to move your ship" << endl;
-                                                cout << "Press enter to save the position of ship" << endl;
-                                                cout << "Press r to rotate your ship" << endl;
-
-                                                gerak = getch();
-
-                                                gerakKapal(gerak, battleshipX, battleshipY, battleshipShipLength, battleship, isHrBattleship, mapBattleShip2);
-
-                                                if (gerak == '\r'){
-                                                    done = true;
-                                                }
-
-                                            system("cls");
+                                                deployAndOperateShip(gerak, '4', battleshipShipLength, battleshipX, battleshipY, battleship, isHrBattleship, done, mapBattleShip2, "Battle");
                                             } while (!done);
                                         break;
                                         }
                                         case 5:{
                                             do {
-                                                spawnShip(carrierShipLength, carrierX, carrierY, carrier, isHrCarrier, mapBattleShip2);
-
-                                                cout << "== Carrier Ship \033[35m*****\033[0m ==" << endl << endl;
-
-                                                displayBoard(mapBattleShip2);
-
-                                                cout << endl;
-                                                cout << "Press w/a/s/d to move your ship" << endl;
-                                                cout << "Press enter to save the position of ship" << endl;
-                                                cout << "Press r to rotate your ship" << endl;
-
-                                                gerak = getch();
-
-                                                gerakKapal(gerak, carrierX, carrierY, carrierShipLength, carrier, isHrCarrier, mapBattleShip2);
-
-                                                if (gerak == '\r'){
-                                                    done = true;
-                                                }
-
-                                            system("cls");
+                                                deployAndOperateShip(gerak, '5', carrierShipLength, carrierX, carrierY, carrier, isHrCarrier, done, mapBattleShip2, "Carrier");
                                             } while (!done);
                                         break;
                                         }
@@ -873,7 +713,7 @@ int main()
                                     if (play){
                                         int ctr = 0;
                                         do {
-                                            cout << "== Welcome to the game battleship ==" << endl << endl;
+                                            cout << "== BATTLESHIP ==" << endl << endl;
 
                                             if (ctr % 2 == 1){
                                                 displayBoardPlayC(mapBattleShip);
@@ -882,14 +722,14 @@ int main()
                                             }
                                             cout << endl;
                                             if (ctr % 2 == 1){
-                                                ctr++;
                                                 displayBoardPlayC(mapBattleShip2);
                                             } else {
-                                                ctr++;
                                                 displayBoardPlay(mapBattleShip2);
                                             }
 
                                             playInGame = getch();
+                                            if (playInGame == 'c')
+                                                ctr++;
                                         system("cls");
                                         } while (playInGame != 's');
                                     }
