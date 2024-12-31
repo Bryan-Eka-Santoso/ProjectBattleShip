@@ -4,6 +4,8 @@
 #include <vector>
 #include <cstdlib>
 #include <ctime>
+#include <string>
+#include <iomanip>
 
 using namespace std;
 
@@ -84,23 +86,31 @@ void displayBoard(int mapBattleShip[9][11]){
     }
 }
 
-void displayBoardPlay(int mapBattleShip[9][11], string color, bool &cheat){
+void displayBoardPlay(int mapBattleShip[9][11], string color, bool &cheat, int num1, int num2){
     if (!cheat){
         cout << color;
         for(int i = 0; i < 9; i++) {
             if (i == 0 || i == 8) {
                 for (int j = 0; j < 11; j++) {
                     if(j == 0 || j == 10){
-                        cout << "   ";
+                        cout << "    ";
                     } else {
-                        char letter = 'a' + j - 1;
-                        cout << " " << letter << " ";
+                        if (i == num1){
+                            char letter = 'a' + j - 1;
+                            cout << " " << letter << " ";
+                        }
                     }
                 }
             } else {
                 for (int j = 0; j < 11; j++) {
-                    if (mapBattleShip[i][j] == 1) {
-                        cout << " " << i << " ";
+                    if (mapBattleShip[i][j] == 1 && j == num2) {
+                        cout << "   ";
+                    } else if (mapBattleShip[i][j] == 1){
+                        cout << "  " << i << " ";
+                    } else if (mapBattleShip[i][j] == 7){
+                        cout << "[O]";
+                    } else if (mapBattleShip[i][j] == 8){
+                        cout << "[X]";
                     } else {
                         cout << "[ ]";
                     }
@@ -115,16 +125,20 @@ void displayBoardPlay(int mapBattleShip[9][11], string color, bool &cheat){
             if (i == 0 || i == 8) {
                 for (int j = 0; j < 11; j++) {
                     if(j == 0 || j == 10){
-                        cout << "   ";
+                        cout << "    ";
                     } else {
-                        char letter = 'a' + j - 1;
-                        cout << " " << letter << " ";
+                        if (i == num1){
+                            char letter = 'a' + j - 1;
+                            cout << " " << letter << " ";
+                        }
                     }
                 }
             } else {
                 for (int j = 0; j < 11; j++) {
-                    if (mapBattleShip[i][j] == 1) {
-                        cout << " " << i << " ";
+                    if (mapBattleShip[i][j] == 1 && j == num2){
+                        cout << "   ";
+                    } else if (mapBattleShip[i][j] == 1) {
+                        cout << "  " << i << " ";
                     } else {
                         if(mapBattleShip[i][j] == 2){
                             cout << "[\033[31m*\033[0m" << color << "]";
@@ -136,6 +150,10 @@ void displayBoardPlay(int mapBattleShip[9][11], string color, bool &cheat){
                             cout << "[\033[34m*\033[0m" << color << "]";
                         } else if(mapBattleShip[i][j] == 6){
                             cout << "[\033[35m*\033[0m" << color << "]";
+                        } else if (mapBattleShip[i][j] == 7){
+                            cout << "[O]";
+                        } else if (mapBattleShip[i][j] == 8){
+                            cout << "[X]";
                         } else {
                             cout << "[ ]";
                         }
@@ -147,6 +165,7 @@ void displayBoardPlay(int mapBattleShip[9][11], string color, bool &cheat){
         cout << defaultColor;
     }
 }
+
 void gerakKapal(char gerak, int &x, int &y, int &shipLength, int modelsShip, bool &isHorizontal, int mapBatShip[9][11]) {
     for (int i = 0; i < shipLength; i++) {
         if (isHorizontal) {
@@ -366,8 +385,6 @@ void shipRandomizer(int mapBatShip[9][11]){
 //    system("pause");
 }
 
-
-
 void deployAndOperateShip(char gerak, char colorCode, int shipLength, int &x, int &y, int modelShip, bool &isHorizontal, bool &done, int mapBatShip[9][11], string name){
 
     spawnShip(shipLength, x, y, modelShip, isHorizontal, mapBatShip);
@@ -381,6 +398,43 @@ void deployAndOperateShip(char gerak, char colorCode, int shipLength, int &x, in
         shipRandomizer(mapBatShip);
     }
     system("cls");
+}
+
+void risetCoordinate(bool &isHr, int &x, int &y){
+    isHr = true;
+    x = 1;
+    y = 1;
+}
+
+void risetMap(int mapBattleShip[9][11]){
+    for(int i = 0; i < 9; i++){
+        for(int j = 0; j < 11; j++){
+            if(mapBattleShip[i][j] != 1 && mapBattleShip[i][j] != 0){
+                mapBattleShip[i][j] = 0;
+            }
+        }
+    }
+}
+
+bool validateCoordinateInput(string coordinates){
+    if (coordinates.size() > 2)
+        return false;
+    else {
+        if (coordinates.at(0) < 96 || coordinates.at(0) > 105)
+            return false;
+        else if (coordinates.at(1) < 49 || coordinates.at(1) > 55)
+            return false;
+    }
+    return true;
+}
+
+int processCoordinates(string coordinates){
+    int num1 = coordinates.at(0) - 96; // a jadi 1, b jadi 2, dsb
+    int num2 = coordinates.at(1) - 48;
+
+    int decipher = num1 * 10 + num2;
+    return decipher;
+
 }
 
 int main()
@@ -475,6 +529,14 @@ int main()
                                             }
                                             case 4:{
                                                 bool play = false;
+
+                                                risetCoordinate(isHrDestroyer, destroyerX, destroyerY);
+                                                risetCoordinate(isHrSubmarine, submarineX, submarineY);
+                                                risetCoordinate(isHrCruiser, cruiserX, cruiserY);
+                                                risetCoordinate(isHrBattleship, battleshipX, battleshipY);
+                                                risetCoordinate(isHrCarrier, carrierX, carrierY);
+                                                risetMap(mapBattleShip);
+
                                                 do {
                                                     cout << "== You selected very hard difficulty ==" << endl;
                                                     cout << "Please set up the position your ship :" << endl;
@@ -551,15 +613,37 @@ int main()
                                                 if (play){
                                                     shipRandomizer(mapBattleShipAi);
                                                     bool revealShipsCheat = false;
+                                                    int ctr2 = 0;
                                                     do {
-                                                        cout << "== Welcome to the game battleship ==\n" << endl;
-                                                        displayBoardPlay(mapBattleShipAi, lightRed, revealShipsCheat);
-                                                        cout << endl;
-                                                        displayBoardPlay(mapBattleShip, lightBlue, revealShipsCheat);
-                                                        cout << endl;
-                                                        cout << "Enter your attack coordinates: ";
-                                                        cin >> attack;
-                                                        if (attack == "cheatBMK"){
+                                                        cout << " ======   AI " << lightRed << "BATTLE" << lightBlue << "SHIP" << defaultColor << "   ======\n" << endl;
+                                                        if (ctr2 % 2 == 0){
+                                                            displayBoardPlay(mapBattleShipAi, lightRed, revealShipsCheat, 0, 10);
+                                                            cout << lightRed << setw(16) << "" << "AI" << defaultColor << endl;
+                                                            cout << endl;
+                                                            cout << "---------------------------------\n" << endl;
+                                                            cout << lightBlue << setw(14) << "" << "PLAYER" << defaultColor << endl;
+                                                            displayBoardPlay(mapBattleShip, lightBlue, revealShipsCheat, 8, 10);
+                                                            cout << endl;
+                                                        } else {
+                                                            displayBoardPlay(mapBattleShip, lightBlue, revealShipsCheat, 0, 10);
+                                                            cout << lightBlue << setw(14) << "" << "PLAYER" << defaultColor << endl;
+                                                            cout << endl;
+                                                            cout << "---------------------------------\n" << endl;
+                                                            cout << lightRed << setw(16) << "" << "AI" << defaultColor << endl;
+                                                            displayBoardPlay(mapBattleShipAi, lightRed, revealShipsCheat, 8, 10);
+                                                            cout << endl;
+                                                        }
+
+                                                        if (ctr2 % 2 == 0){
+                                                            ctr2++;
+                                                            cout << lightBlue << "Player 1" << defaultColor << "'s turn!\nEnter your attack coordinates (" << lightRed << "xy" << defaultColor << "): ";
+                                                            cin >> attack;
+                                                        } else {
+                                                            ctr2++;
+                                                            cout << lightRed << "Player 2" << defaultColor << "'s turn!\nEnter your attack coordinates (" << lightBlue << "xy" << defaultColor << "): ";
+                                                            cin >> attack;
+                                                        }
+                                                        if (attack == "777"){
                                                             if (!revealShipsCheat){
                                                                 cout << "Cheat activated" << endl;
                                                             } else {
@@ -579,6 +663,14 @@ int main()
                             }
                             case 2:{
                                 bool play = false;
+
+                                risetCoordinate(isHrDestroyer, destroyerX, destroyerY);
+                                risetCoordinate(isHrSubmarine, submarineX, submarineY);
+                                risetCoordinate(isHrCruiser, cruiserX, cruiserY);
+                                risetCoordinate(isHrBattleship, battleshipX, battleshipY);
+                                risetCoordinate(isHrCarrier, carrierX, carrierY);
+                                risetMap(mapBattleShip);
+
                                 do {
                                     cout << "== Battle Ship Versus Mode ==" << endl;
                                     cout << "Please player 1 set up the position your ship :" << endl;
@@ -654,12 +746,14 @@ int main()
 
                                 if (play){
                                     play = false;
-                                    int destroyerY = 1, destroyerX = 1;
-                                    int submarineY = 1, submarineX = 1;
-                                    int cruiserY = 1, cruiserX = 1;
-                                    int battleshipY = 1, battleshipX = 1;
-                                    int carrierX = 1, carrierY = 1;
-                                    bool isHrDestroyer = true, isHrSubmarine = true, isHrCruiser = true, isHrBattleship = true, isHrCarrier = true;
+
+                                    risetCoordinate(isHrDestroyer, destroyerX, destroyerY);
+                                    risetCoordinate(isHrSubmarine, submarineX, submarineY);
+                                    risetCoordinate(isHrCruiser, cruiserX, cruiserY);
+                                    risetCoordinate(isHrBattleship, battleshipX, battleshipY);
+                                    risetCoordinate(isHrCarrier, carrierX, carrierY);
+                                    risetMap(mapBattleShip2);
+
                                     do {
                                         cout << "== Battle Ship Versus Mode ==" << endl;
                                         cout << "Please player 2 set up the position your ship :" << endl;
@@ -668,7 +762,7 @@ int main()
                                         cout << "3. " << "\033[33m***\033[0m" << " Cruiser" << endl;
                                         cout << "4. " << "\033[34m****\033[0m" << " Battleship" << endl;
                                         cout << "5. " << "\033[35m*****\033[0m" << " Carrier" << endl;
-                                        cout << "6. " << "Finish" << endl;
+                                        cout << "6. " << "Play Game" << endl;
                                         cout << "0. Back" << endl;
 
                                     do {
@@ -735,15 +829,44 @@ int main()
 
                                     if (play){
                                         bool revealShipsCheat = false;
+                                        int ctr = 0;
+                                        int ctrWin1 = 0;
+                                        int ctrWin2 = 0;
+
                                         do {
-                                            cout << "== Welcome to the game battleship ==\n" << endl;
-                                            displayBoardPlay(mapBattleShip2, lightRed, revealShipsCheat);
-                                            cout << endl;
-                                            displayBoardPlay(mapBattleShip, lightBlue, revealShipsCheat);
-                                            cout << endl;
-                                            cout << "Enter your attack coordinates: ";
-                                            cin >> attack;
-                                            if (attack == "cheatBMK"){
+                                            cout << " ======   VS " << lightRed << "BATTLE" << lightBlue << "SHIP"<< defaultColor << "   ======\n" << endl;
+                                            if (ctr % 2 == 0){
+                                                displayBoardPlay(mapBattleShip2, lightRed, revealShipsCheat, 0, 10);
+                                                cout << lightRed << setw(13) << "" << "PLAYER 2" << defaultColor << endl;
+                                                cout << endl;
+                                                cout << "---------------------------------\n" << endl;
+                                                cout << lightBlue << setw(13) << "" << "PLAYER 1" << defaultColor << endl;
+                                                displayBoardPlay(mapBattleShip, lightBlue, revealShipsCheat, 8, 10);
+                                                cout << endl;
+                                            } else {
+                                                displayBoardPlay(mapBattleShip, lightBlue, revealShipsCheat, 0, 10);
+                                                cout << lightBlue << setw(13) << "" << "PLAYER 1" << defaultColor << endl;
+                                                cout << endl;
+                                                cout << "---------------------------------\n" << endl;
+                                                cout << lightRed << setw(13) << "" << "PLAYER 2" << defaultColor << endl;
+                                                displayBoardPlay(mapBattleShip2, lightRed, revealShipsCheat, 8, 10);
+                                                cout << endl;
+                                            }
+
+                                            if (ctr % 2 == 0){
+                                                ctr++;
+                                                cout << lightBlue << "Player 1" << defaultColor << "'s turn!\nEnter your attack coordinates (ex." << lightRed << " b4, i5" << defaultColor << "): " << lightRed;
+                                                cin >> attack;
+                                                cout << defaultColor;
+                                            } else {
+                                                ctr++;
+                                                cout << lightRed << "Player 2" << defaultColor << "'s turn!\nEnter your attack coordinates (ex." << lightBlue << " b4, i5" << defaultColor << "): " << lightBlue;
+                                                cin >> attack;
+                                                cout << defaultColor;
+                                            }
+
+                                            if (attack == "777"){
+                                                ctr--;
                                                 if (!revealShipsCheat){
                                                     cout << "Cheat activated" << endl;
                                                 } else {
@@ -751,9 +874,51 @@ int main()
                                                 }
                                                 Sleep(500);
                                                 revealShipsCheat = !revealShipsCheat;
+                                            } else {
+                                                if (!validateCoordinateInput(attack)){
+                                                    cout << "Invalid Input!" << endl;
+                                                    Sleep(500);
+                                                } else {
+
+                                                    int y = processCoordinates(attack) % 10;
+                                                    int x = processCoordinates(attack) / 10 % 10;
+
+                                                    if(ctr % 2 == 0){
+                                                        if(mapBattleShip[y][x] == 0 || mapBattleShip[y][x] == 1){
+                                                            mapBattleShip[y][x] = 8;
+                                                            cout << "No ship was hit!" << endl;
+                                                        } else {
+                                                            mapBattleShip[y][x] = 7;
+                                                            ctrWin1++;
+                                                            cout << 17 - ctrWin1 << " more points to go!" << endl;
+                                                        }
+                                                        Sleep(500);
+                                                    } else {
+                                                       if(mapBattleShip2[y][x] == 0 || mapBattleShip2[y][x] == 1){
+                                                            mapBattleShip2[y][x] = 8;
+                                                            cout << "No ship was hit!" << endl;
+                                                        } else {
+                                                            mapBattleShip2[y][x] = 7;
+                                                            ctrWin2++;
+                                                            cout << 17 - ctrWin2 << " more points to go!" << endl;
+                                                        }
+                                                        Sleep(500);
+                                                    }
+                                                }
                                             }
+
                                             system("cls");
-                                        } while (attack != "x");
+                                        } while (attack != "x" && ctrWin1 != 17 && ctrWin2 != 17);
+                                        if(ctrWin1 == 17){
+                                            cout << lightBlue << "Player 1 " << defaultColor << "Win !!!";
+                                            Sleep(3000);
+                                            system("cls");
+                                            break;
+                                        } else if (ctrWin2 == 17){}
+                                            cout << lightRed << "Player 2 " << defaultColor << "Win !!!";
+                                            Sleep(3000);
+                                            system("cls");
+                                            break;
                                     }
                                 }
                                 break;
