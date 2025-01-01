@@ -284,10 +284,11 @@ void gerakKapal(char gerak, int &x, int &y, int &shipLength, int modelsShip, boo
 
 void spawnShip(int shipLength, int &x, int &y, int modelsShip, bool &isHorizontal, int mapBatShip[9][11]){
     for(int i = 0; i < shipLength; i++){
-        if (isHorizontal)
+        if (isHorizontal){
             mapBatShip[y][x + i] = modelsShip;
-        else
+        } else {
             mapBatShip[y + i][x] = modelsShip;
+        }
     }
 }
 
@@ -417,7 +418,7 @@ void risetMap(int mapBattleShip[9][11]){
 }
 
 bool validateCoordinateInput(string coordinates){
-    if (coordinates.size() > 2)
+    if (coordinates.size() > 2 || coordinates.size() < 2)
         return false;
     else {
         if (coordinates.at(0) < 96 || coordinates.at(0) > 105)
@@ -433,8 +434,55 @@ int processCoordinates(string coordinates){
     int num2 = coordinates.at(1) - 48;
 
     int decipher = num1 * 10 + num2;
+
     return decipher;
 
+}
+
+void displayShipPlay(int mapBattleShip[9][11]){
+    int shipLength[5] = {0, 0, 0, 0, 0};
+    string shipColors[5] = {"\033[31m*\033[0m", "\033[32m*\033[0m", "\033[33m*\033[0m", "\033[34m*\033[0m", "\033[35m*\033[0m"};
+    string destroyerDisplay;
+    string submarineDisplay;
+    string cruiserDisplay;
+    string battleshipDisplay;
+    string carrierDisplay;
+
+    for(int i = 0; i < 9; i++){
+        for(int j = 0; j < 11; j++){
+            if(mapBattleShip[i][j] == 2){
+                shipLength[0]++;
+            } else if (mapBattleShip[i][j] == 3){
+                shipLength[1]++;
+            } else if (mapBattleShip[i][j] == 4){
+                shipLength[2]++;
+            } else if (mapBattleShip[i][j] == 5){
+                shipLength[3]++;
+            } else if (mapBattleShip[i][j] == 6){
+                shipLength[4]++;
+            }
+        }
+    }
+
+    for(int i = 0; i < shipLength[0]; i++){
+        destroyerDisplay += shipColors[0];
+    }
+    for(int i = 0; i < shipLength[1]; i++){
+        submarineDisplay += shipColors[1];
+    }
+    for(int i = 0; i < shipLength[2]; i++){
+        cruiserDisplay += shipColors[2];
+    }
+    for(int i = 0; i < shipLength[3]; i++){
+        battleshipDisplay += shipColors[3];
+    }
+    for(int i = 0; i < shipLength[4]; i++){
+        carrierDisplay += shipColors[4];
+    }
+
+    cout << endl;
+    cout << setw(5) << " " << destroyerDisplay << " " << submarineDisplay << "  " << cruiserDisplay << "  " << battleshipDisplay << " " << carrierDisplay;
+    cout << endl;
 }
 
 int main()
@@ -832,23 +880,28 @@ int main()
                                         int ctr = 0;
                                         int ctrWin1 = 0;
                                         int ctrWin2 = 0;
+                                        int x,y;
 
                                         do {
                                             cout << " ======   VS " << lightRed << "BATTLE" << lightBlue << "SHIP"<< defaultColor << "   ======\n" << endl;
                                             if (ctr % 2 == 0){
                                                 displayBoardPlay(mapBattleShip2, lightRed, revealShipsCheat, 0, 10);
                                                 cout << lightRed << setw(13) << "" << "PLAYER 2" << defaultColor << endl;
+                                                displayShipPlay(mapBattleShip2);
                                                 cout << endl;
                                                 cout << "---------------------------------\n" << endl;
                                                 cout << lightBlue << setw(13) << "" << "PLAYER 1" << defaultColor << endl;
+                                                displayShipPlay(mapBattleShip);
                                                 displayBoardPlay(mapBattleShip, lightBlue, revealShipsCheat, 8, 10);
                                                 cout << endl;
                                             } else {
                                                 displayBoardPlay(mapBattleShip, lightBlue, revealShipsCheat, 0, 10);
                                                 cout << lightBlue << setw(13) << "" << "PLAYER 1" << defaultColor << endl;
+                                                displayShipPlay(mapBattleShip);
                                                 cout << endl;
                                                 cout << "---------------------------------\n" << endl;
                                                 cout << lightRed << setw(13) << "" << "PLAYER 2" << defaultColor << endl;
+                                                displayShipPlay(mapBattleShip2);
                                                 displayBoardPlay(mapBattleShip2, lightRed, revealShipsCheat, 8, 10);
                                                 cout << endl;
                                             }
@@ -876,6 +929,7 @@ int main()
                                                 revealShipsCheat = !revealShipsCheat;
                                             } else {
                                                 if (!validateCoordinateInput(attack)){
+                                                    ctr--;
                                                     cout << "Invalid Input!" << endl;
                                                     Sleep(500);
                                                 } else {
@@ -887,20 +941,28 @@ int main()
                                                         if(mapBattleShip[y][x] == 0 || mapBattleShip[y][x] == 1){
                                                             mapBattleShip[y][x] = 8;
                                                             cout << "No ship was hit!" << endl;
-                                                        } else {
+                                                        } else if (mapBattleShip[y][x] >= 2 && mapBattleShip[y][x] <= 6){
                                                             mapBattleShip[y][x] = 7;
+                                                            ctr--;
                                                             ctrWin1++;
                                                             cout << 17 - ctrWin1 << " more points to go!" << endl;
+                                                        } else {
+                                                            ctr--;
+                                                            cout << "Invalid coordinates!" << endl;
                                                         }
                                                         Sleep(500);
                                                     } else {
                                                        if(mapBattleShip2[y][x] == 0 || mapBattleShip2[y][x] == 1){
                                                             mapBattleShip2[y][x] = 8;
                                                             cout << "No ship was hit!" << endl;
-                                                        } else {
+                                                        } else if (mapBattleShip2[y][x] >= 2 && mapBattleShip2[y][x] <= 6){
                                                             mapBattleShip2[y][x] = 7;
+                                                            ctr--;
                                                             ctrWin2++;
                                                             cout << 17 - ctrWin2 << " more points to go!" << endl;
+                                                        } else {
+                                                            ctr--;
+                                                            cout << "Invalid coordinates!" << endl;
                                                         }
                                                         Sleep(500);
                                                     }
@@ -914,11 +976,12 @@ int main()
                                             Sleep(3000);
                                             system("cls");
                                             break;
-                                        } else if (ctrWin2 == 17){}
+                                        } else if (ctrWin2 == 17){
                                             cout << lightRed << "Player 2 " << defaultColor << "Win !!!";
                                             Sleep(3000);
                                             system("cls");
                                             break;
+                                        }
                                     }
                                 }
                                 break;

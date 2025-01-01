@@ -11,11 +11,27 @@
 	<conio.h>
 	<windows.h>
 
+1735393878 D
+
 1735574959 source:d:\files kuliah\proyekitp\projectbattleship\main.cpp
+
+1735581007 source:d:\latihan-github\update1projectbs\3012232312\projectbattleship\main.cpp
+
+1735581007 47d164206116892a4e85b086cde9090914954
 	<iostream>
 	<conio.h>
 	<windows.h>
 	<vector>
 	<cstdlib>
 	<ctime>
+
+1735734548 source:d:\latihan-github\update1projectbs\311224\projectbattleship\main.cpp
+	<iostream>
+	<conio.h>
+	<windows.h>
+	<vector>
+	<cstdlib>
+	<ctime>
+	<string>
+	<iomanip>
 
