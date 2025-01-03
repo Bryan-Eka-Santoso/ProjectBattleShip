@@ -9,21 +9,10 @@
 
 using namespace std;
 
-char gerak;
-char playInGame;
-string attack;
-string lightRed = "\033[091m", lightBlue = "\033[094m";
-string defaultColor = "\033[0m";
-int destroyerShipLength = 2;
-int submarineShipLength = 3;
-int cruiserShipLength = 3;
-int battleshipShipLength = 4;
-int carrierShipLength = 5;
-int destroyerY = 1, destroyerX = 1;
-int submarineY = 1, submarineX = 1;
-int cruiserY = 1, cruiserX = 1;
-int battleshipY = 1, battleshipX = 1;
-int carrierX = 1, carrierY = 1;
+char gerak, playInGame;
+string attack, defaultColor = "\033[0m", lightRed = "\033[091m", lightBlue = "\033[094m";
+int destroyerShipLength = 2, submarineShipLength = 3, cruiserShipLength = 3, battleshipShipLength = 4, carrierShipLength = 5;
+int destroyerY = 1, destroyerX = 1, submarineY = 1, submarineX = 1, cruiserY = 1, cruiserX = 1, battleshipY = 1, battleshipX = 1, carrierX = 1, carrierY = 1;
 int destroyer = 2, submarine = 3, cruiser = 4, battleship = 5, carrier = 6;
 bool isHrDestroyer = true, isHrSubmarine = true, isHrCruiser = true, isHrBattleship = true, isHrCarrier = true;
 
@@ -324,7 +313,6 @@ void shipRandomizedDeployer(int &x, int &y, int shipLength, int modelShip, int m
 
     while (!canDeploy){
         canDeploy = true;
-
         randomX = 1 + rand() % 9;
         randomY = 1 + rand() % 7;
         randomRotate = rand() % 2;
@@ -387,11 +375,11 @@ void shipRandomizer(int mapBatShip[9][11]){
 }
 
 void deployAndOperateShip(char gerak, char colorCode, int shipLength, int &x, int &y, int modelShip, bool &isHorizontal, bool &done, int mapBatShip[9][11], string name){
-
     spawnShip(shipLength, x, y, modelShip, isHorizontal, mapBatShip);
     deployShip(name, colorCode, shipLength, mapBatShip);
     gerak = getch();
     gerakKapal(gerak, x, y, shipLength, modelShip, isHorizontal, mapBatShip);
+
     if (gerak == '\r'){
         done = true;
 
@@ -432,52 +420,81 @@ bool validateCoordinateInput(string coordinates){
 int processCoordinates(string coordinates){
     int num1 = coordinates.at(0) - 96; // a jadi 1, b jadi 2, dsb
     int num2 = coordinates.at(1) - 48;
-
     int decipher = num1 * 10 + num2;
 
     return decipher;
-
 }
 
 void displayShipPlay(int mapBattleShip[9][11]){
-    int shipLength[5] = {0, 0, 0, 0, 0};
+    int shipLengthInMap[5] = {0, 0, 0, 0, 0};
+    int shipLength[5] = {2, 3, 3, 4, 5};
     string shipColors[5] = {"\033[31m*\033[0m", "\033[32m*\033[0m", "\033[33m*\033[0m", "\033[34m*\033[0m", "\033[35m*\033[0m"};
-    string destroyerDisplay;
-    string submarineDisplay;
-    string cruiserDisplay;
-    string battleshipDisplay;
-    string carrierDisplay;
+    string destroyerDisplay, submarineDisplay, cruiserDisplay, battleshipDisplay, carrierDisplay;
 
     for(int i = 0; i < 9; i++){
         for(int j = 0; j < 11; j++){
             if(mapBattleShip[i][j] == 2){
-                shipLength[0]++;
+                shipLengthInMap[0]++;
             } else if (mapBattleShip[i][j] == 3){
-                shipLength[1]++;
+                shipLengthInMap[1]++;
             } else if (mapBattleShip[i][j] == 4){
-                shipLength[2]++;
+                shipLengthInMap[2]++;
             } else if (mapBattleShip[i][j] == 5){
-                shipLength[3]++;
+                shipLengthInMap[3]++;
             } else if (mapBattleShip[i][j] == 6){
-                shipLength[4]++;
+                shipLengthInMap[4]++;
             }
         }
     }
 
-    for(int i = 0; i < shipLength[0]; i++){
-        destroyerDisplay += shipColors[0];
+    if(shipLengthInMap[0] != 0){
+        for(int i = 0; i < shipLength[0]; i++){
+            destroyerDisplay += shipColors[0];
+        }
+    } else {
+        for(int i = 0; i < shipLengthInMap[0]; i++){
+            destroyerDisplay += shipColors[0];
+        }
     }
-    for(int i = 0; i < shipLength[1]; i++){
-        submarineDisplay += shipColors[1];
+
+    if(shipLengthInMap[1] != 0){
+        for(int i = 0; i < shipLength[1]; i++){
+            submarineDisplay += shipColors[1];
+        }
+    } else {
+        for(int i = 0; i < shipLengthInMap[1]; i++){
+            submarineDisplay += shipColors[1];
+        }
     }
-    for(int i = 0; i < shipLength[2]; i++){
-        cruiserDisplay += shipColors[2];
+
+    if(shipLengthInMap[2] != 0){
+        for(int i = 0; i < shipLength[2]; i++){
+            cruiserDisplay += shipColors[2];
+        }
+    } else {
+        for(int i = 0; i < shipLengthInMap[2]; i++){
+            cruiserDisplay += shipColors[2];
+        }
     }
-    for(int i = 0; i < shipLength[3]; i++){
-        battleshipDisplay += shipColors[3];
+
+    if(shipLengthInMap[3] != 0){
+        for(int i = 0; i < shipLength[3]; i++){
+            battleshipDisplay += shipColors[3];
+        }
+    } else {
+        for(int i = 0; i < shipLengthInMap[3]; i++){
+            battleshipDisplay += shipColors[3];
+        }
     }
-    for(int i = 0; i < shipLength[4]; i++){
-        carrierDisplay += shipColors[4];
+
+    if(shipLengthInMap[4] != 0){
+        for(int i = 0; i < shipLength[4]; i++){
+            carrierDisplay += shipColors[4];
+        }
+    } else {
+        for(int i = 0; i < shipLengthInMap[4]; i++){
+            carrierDisplay += shipColors[4];
+        }
     }
 
     cout << endl;
@@ -711,7 +728,6 @@ int main()
                             }
                             case 2:{
                                 bool play = false;
-
                                 risetCoordinate(isHrDestroyer, destroyerX, destroyerY);
                                 risetCoordinate(isHrSubmarine, submarineX, submarineY);
                                 risetCoordinate(isHrCruiser, cruiserX, cruiserY);
@@ -794,7 +810,6 @@ int main()
 
                                 if (play){
                                     play = false;
-
                                     risetCoordinate(isHrDestroyer, destroyerX, destroyerY);
                                     risetCoordinate(isHrSubmarine, submarineX, submarineY);
                                     risetCoordinate(isHrCruiser, cruiserX, cruiserY);
@@ -880,7 +895,6 @@ int main()
                                         int ctr = 0;
                                         int ctrWin1 = 0;
                                         int ctrWin2 = 0;
-                                        int x,y;
 
                                         do {
                                             cout << " ======   VS " << lightRed << "BATTLE" << lightBlue << "SHIP"<< defaultColor << "   ======\n" << endl;
@@ -987,7 +1001,6 @@ int main()
                                 break;
                             }
                         }
-
                 } while (menuPlayGame != 0);
             break;
             }
