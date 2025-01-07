@@ -13,7 +13,15 @@
 
 1735393878 D
 
-1735574959 source:d:\files kuliah\proyekitp\projectbattleship\main.cpp
+1736264102 source:d:\files kuliah\proyekitp\projectbattleship\main.cpp
+	<iostream>
+	<conio.h>
+	<windows.h>
+	<vector>
+	<cstdlib>
+	<ctime>
+	<string>
+	<iomanip>
 
 1735581007 source:d:\latihan-github\update1projectbs\3012232312\projectbattleship\main.cpp
 
