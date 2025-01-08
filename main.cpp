@@ -57,10 +57,10 @@ int mapBattleShipAi[9][11] = {
 void displayMenu(int selectedOption, int menuChoice, int &pick){
     system("cls");
     int theSize;
-    vector<string> mainMenu = {"1. Play Game", "2. Leaderboard", "3. History Game", "0. Exit"};
-    vector<string> gamemodeMenu = {"1. VS AI", "2. 2 Player", "0. Back"};
-    vector<string> difficultyMenu = {"1. Easy", "2. Medium", "3. Hard", "4. \033[091mGacor !!!\033[0m", "0. Back"};
-    vector<string> shipMenu = {"1. \033[31m**\033[0m Destroyer", "2. \033[32m***\033[0m Submarine", "3. \033[33m***\033[0m Cruiser", "4. \033[34m****\033[0m Battleship", "5. \033[35m*****\033[0m Carrier", "6. Continue", "0. Back"};
+    vector<string> mainMenu = {"Play Game", "Leaderboard", "History Game", "Exit"};
+    vector<string> gamemodeMenu = {"VS AI", "2 Player", "Back"};
+    vector<string> difficultyMenu = {"Easy", "Medium", "Hard", "\033[091mGacor !!!\033[0m", "Back"};
+    vector<string> shipMenu = {"\033[31m**\033[0m Destroyer", "\033[32m***\033[0m Submarine", "\033[33m***\033[0m Cruiser", "\033[34m****\033[0m Battleship", "\033[35m*****\033[0m Carrier", "Continue", "Back"};
 //    vector<string>
     while (true){
         system("cls");
@@ -100,8 +100,8 @@ void displayMenu(int selectedOption, int menuChoice, int &pick){
             if (menuChoice == 5) difficultyPick = "medium";
             if (menuChoice == 6) difficultyPick = "hard";
             if (menuChoice == 7) difficultyPick = "\033[091mgacor !!!\033[0m";
-            if (menuChoice == 8) playerPick = "\033[094mPlayer 1\033[0m";
-            if (menuChoice == 9) playerPick = "\033[091mPlayer 2\033[0m";
+            if (menuChoice == 8) playerPick = "\033[094mplayer 1\033[0m";
+            if (menuChoice == 9) playerPick = "\033[091mplayer 2\033[0m";
 
             if (menuChoice < 8){
                 cout << "== You have selected " << difficultyPick << " difficulty ==" << endl;
@@ -496,7 +496,6 @@ void deployAndOperateShip(char gerak, char colorCode, int shipLength, int &x, in
 
     if (gerak == '\r'){
         done = true;
-
     } else if (gerak == 'c'){
         shipRandomizer(mapBatShip);
     }
@@ -627,12 +626,15 @@ void displayShipPlay(int mapBattleShip[9][11]){
 }
 
 string attackForAI(int mapBattleShip[9][11], int ctrShip, int ctrSend, string difficulty){
+    int ctr = 0;
     int cy_ship[17];
     int cx_ship[17];
+    int cy_guess[63];
+    int cx_guess[63];
     int y, x;
     char yChar;
     string result;
-    int ctr = 0;
+    bool isSame;
 
     for(int i = 0; i < 9; i++){
         for(int j = 0; j < 11; j++){
@@ -645,33 +647,82 @@ string attackForAI(int mapBattleShip[9][11], int ctrShip, int ctrSend, string di
     }
 
     if (difficulty == "Easy"){
-        if(ctrSend % 8 == 0){
+        if(ctrSend % 6 == 0){
             y = cy_ship[ctrShip];
             x = cx_ship[ctrShip];
+
+            cy_guess[ctrSend] = y;
+            cx_guess[ctrSend] = x;
         } else {
-            y = rand () % 7 + 1;
-            x = rand () % 9 + 1;
+            do {
+                x = rand () % 7 + 1;
+                y = rand () % 9 + 1;
+
+                isSame = true;
+                for(int i = 0; i < ctrSend; i++){
+                    if(cy_guess[i] != y && cx_guess[i] != x){
+                        isSame = false;
+                        break;
+                    }
+                }
+            } while (isSame);
+
+            cy_guess[ctrSend] = y;
+            cx_guess[ctrSend] = x;
         }
     } else if (difficulty == "Medium"){
-        if(ctrSend % 5 == 0){
+        if(ctrSend % 4 == 0){
             y = cy_ship[ctrShip];
             x = cx_ship[ctrShip];
+
+            cy_guess[ctrSend] = y;
+            cx_guess[ctrSend] = x;
         } else {
-            y = rand () % 7 + 1;
-            x = rand () % 9 + 1;
+            do {
+                x = rand () % 7 + 1;
+                y = rand () % 9 + 1;
+
+                isSame = true;
+                for(int i = 0; i < ctrSend; i++){
+                    if(cy_guess[i] != y && cx_guess[i] != x){
+                        isSame = false;
+                        break;
+                    }
+                }
+            } while (isSame);
+
+            cy_guess[ctrSend] = y;
+            cx_guess[ctrSend] = x;
         }
     } else if (difficulty == "Hard"){
-        if(ctrSend % 3 == 0){
+        if(ctrSend % 2 == 0){
             y = cy_ship[ctrShip];
             x = cx_ship[ctrShip];
+
+            cy_guess[ctrSend] = y;
+            cx_guess[ctrSend] = x;
         } else {
-            y = rand () % 7 + 1;
-            x = rand () % 9 + 1;
+            do {
+                x = rand () % 7 + 1;
+                y = rand () % 9 + 1;
+
+                isSame = true;
+                for(int i = 0; i < ctrSend; i++){
+                    if(cy_guess[i] != y && cx_guess[i] != x){
+                        isSame = false;
+                        break;
+                    }
+                }
+            } while (isSame);
+
+            cy_guess[ctrSend] = y;
+            cx_guess[ctrSend] = x;
         }
     } else if (difficulty == "Gacor"){
         y = cy_ship[ctrShip];
         x = cx_ship[ctrShip];
     }
+
     yChar = 'a' + y - 1;
     result = string(1, yChar) + to_string(x);
 
@@ -760,6 +811,7 @@ void attackPhase(int mapBattleShipOne[9][11], int mapBattleShipTwo[9][11], int &
 
             cout << 17 - plyrTwoPoint << " more points to go!" << endl;
         } else {
+
             ctr--;
             cout << "Invalid coordinates!" << endl;
         }
@@ -877,10 +929,10 @@ int main()
                                                 string attackAI;
 
                                                 do {
-                                                    cout << " ======   AI " << lightRed << "BATTLE" << lightBlue << "SHIP" << defaultColor << "   ======\n" << endl;
+                                                    cout << " ======   EASY AI " << lightRed << "BATTLE" << lightBlue << "SHIP" << defaultColor << "   ======\n" << endl;
                                                     if (ctr % 2 == 0){
                                                         displayBoardPlay(mapBattleShipAi, lightRed, revealShipsCheat, 0, 10);
-                                                        cout << lightRed << setw(16) << "" << "AI" << defaultColor << endl;\
+                                                        cout << lightRed << setw(16) << "" << "AI" << defaultColor << endl;
                                                         displayShipPlay(mapBattleShipAi);
                                                         cout << endl;
                                                         cout << "---------------------------------\n" << endl;
@@ -891,8 +943,8 @@ int main()
                                                     } else {
                                                         displayBoardPlay(mapBattleShipAi, lightRed, revealShipsCheat, 0, 10);
                                                         cout << lightRed << setw(16) << "" << "AI" << defaultColor << endl;
-                                                        cout << endl;
                                                         displayShipPlay(mapBattleShipAi);
+                                                        cout << endl;
                                                         cout << "---------------------------------\n" << endl;
                                                         cout << lightBlue << setw(14) << "" << "PLAYER" << defaultColor << endl;
                                                         displayShipPlay(mapBattleShip);
@@ -925,7 +977,6 @@ int main()
                                                         if (!validateCoordinateInput(attack)){
                                                             ctr--;
                                                             cout << "Invalid Input!" << endl;
-                                                            Sleep(500);
                                                         } else {
                                                             attackPhase(mapBattleShip, mapBattleShipAi, ctr, ctrShip, ctrWin1, ctrAI, attackAI, attack, "AI");
                                                         }
@@ -970,10 +1021,10 @@ int main()
                                                 string attackAI;
 
                                                 do {
-                                                    cout << " ======   AI " << lightRed << "BATTLE" << lightBlue << "SHIP" << defaultColor << "   ======\n" << endl;
+                                                    cout << " ======   MEDIUM AI " << lightRed << "BATTLE" << lightBlue << "SHIP" << defaultColor << "   ======\n" << endl;
                                                     if (ctr % 2 == 0){
                                                         displayBoardPlay(mapBattleShipAi, lightRed, revealShipsCheat, 0, 10);
-                                                        cout << lightRed << setw(16) << "" << "AI" << defaultColor << endl;\
+                                                        cout << lightRed << setw(16) << "" << "AI" << defaultColor << endl;
                                                         displayShipPlay(mapBattleShipAi);
                                                         cout << endl;
                                                         cout << "---------------------------------\n" << endl;
@@ -984,8 +1035,8 @@ int main()
                                                     } else {
                                                         displayBoardPlay(mapBattleShipAi, lightRed, revealShipsCheat, 0, 10);
                                                         cout << lightRed << setw(16) << "" << "AI" << defaultColor << endl;
-                                                        cout << endl;
                                                         displayShipPlay(mapBattleShipAi);
+                                                        cout << endl;
                                                         cout << "---------------------------------\n" << endl;
                                                         cout << lightBlue << setw(14) << "" << "PLAYER" << defaultColor << endl;
                                                         displayShipPlay(mapBattleShip);
@@ -1063,10 +1114,10 @@ int main()
                                                 string attackAI;
 
                                                 do {
-                                                    cout << " ======   AI " << lightRed << "BATTLE" << lightBlue << "SHIP" << defaultColor << "   ======\n" << endl;
+                                                    cout << " ======   HARD AI " << lightRed << "BATTLE" << lightBlue << "SHIP" << defaultColor << "   ======\n" << endl;
                                                     if (ctr % 2 == 0){
                                                         displayBoardPlay(mapBattleShipAi, lightRed, revealShipsCheat, 0, 10);
-                                                        cout << lightRed << setw(16) << "" << "AI" << defaultColor << endl;\
+                                                        cout << lightRed << setw(16) << "" << "AI" << defaultColor << endl;
                                                         displayShipPlay(mapBattleShipAi);
                                                         cout << endl;
                                                         cout << "---------------------------------\n" << endl;
@@ -1077,8 +1128,8 @@ int main()
                                                     } else {
                                                         displayBoardPlay(mapBattleShipAi, lightRed, revealShipsCheat, 0, 10);
                                                         cout << lightRed << setw(16) << "" << "AI" << defaultColor << endl;
-                                                        cout << endl;
                                                         displayShipPlay(mapBattleShipAi);
+                                                        cout << endl;
                                                         cout << "---------------------------------\n" << endl;
                                                         cout << lightBlue << setw(14) << "" << "PLAYER" << defaultColor << endl;
                                                         displayShipPlay(mapBattleShip);
@@ -1155,10 +1206,10 @@ int main()
                                                 string attackAI;
 
                                                 do {
-                                                    cout << " ======   AI " << lightRed << "BATTLE" << lightBlue << "SHIP" << defaultColor << "   ======\n" << endl;
+                                                    cout << " ======   GACOR AI " << lightRed << "BATTLE" << lightBlue << "SHIP" << defaultColor << "   ======\n" << endl;
                                                     if (ctr % 2 == 0){
                                                         displayBoardPlay(mapBattleShipAi, lightRed, revealShipsCheat, 0, 10);
-                                                        cout << lightRed << setw(16) << "" << "AI" << defaultColor << endl;\
+                                                        cout << lightRed << setw(16) << "" << "AI" << defaultColor << endl;
                                                         displayShipPlay(mapBattleShipAi);
                                                         cout << endl;
                                                         cout << "---------------------------------\n" << endl;
@@ -1169,8 +1220,8 @@ int main()
                                                     } else {
                                                         displayBoardPlay(mapBattleShipAi, lightRed, revealShipsCheat, 0, 10);
                                                         cout << lightRed << setw(16) << "" << "AI" << defaultColor << endl;
-                                                        cout << endl;
                                                         displayShipPlay(mapBattleShipAi);
+                                                        cout << endl;
                                                         cout << "---------------------------------\n" << endl;
                                                         cout << lightBlue << setw(14) << "" << "PLAYER" << defaultColor << endl;
                                                         displayShipPlay(mapBattleShip);
