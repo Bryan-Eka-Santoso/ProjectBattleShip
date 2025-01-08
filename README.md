@@ -43,7 +43,7 @@ Game ini memiliki lebar map permainan yaitu 7 x 9 dan memiliki 5 macam kapal dal
 * Berwarna Ungu ( 1 x 5 ) : Carrier Ship
 
 <p align="center">
-<img src="assets_readme/img/ship"/>
+<img src="assets_readme/img/ship.png"/>
 </p>
 
 Game ini juga memiliki menu leaderboard yang kami ambil berdasarkan poin, poin kami ambil saat player benar menebak kapal dari ai dan juga sebaliknya. Pada leaderboard kami mengambil selisih terbesar kemenangan pada poin player pada ai. Game ini juga memiliki history game yang dapat membantu untuk melihat riwayat permainan pada semua menu dalam permainan battleship.
@@ -51,7 +51,7 @@ Game ini juga memiliki menu leaderboard yang kami ambil berdasarkan poin, poin k
 Game ini memiliki 2 mode yaitu VS AI dan juga 2 player. Pada VS AI kami memiliki 4 macam difficulty yaitu easy, medium, hard, dan juga Gacor !!!. Pada 4 macam difficulty tersebut kami membedakan nya dengan memberikan perbedaan celah kepada penebakan ai kepada map player. Pada mode 2 player, user bisa bermain 1v1 dengan 1 orang lain.
 
 <p align="center">
-<img src="assets_readme/img/setupship"/>
+<img src="assets_readme/img/setupship.png"/>
 </p>
 Selanjutnya kami memberikan menu untuk meng setup 5 kapal pada map, game ini memiliki fitur randomize untuk me random semua posisi pada 5 kapal pada koordinat koordinat yang berbeda. Game ini juga memiliki fitur rotasi, jadi user bisa merotasi kapal menjadi vertikal maupun horizontal.
 
