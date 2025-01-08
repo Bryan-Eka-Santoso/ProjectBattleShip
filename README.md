@@ -2,11 +2,11 @@
 
 Game ini memiliki lebar map permainan yaiut 7 x 9 dan memiliki 5 macam kapal dalam permainan yaitu :
 
-* * 	  Berwarna Merah ( 1 x 2 ) : Destroyer Ship
-* * * 	  Berwarna Hijau ( 1 x 3 ) : Submarine Ship
-* * * 	  Berwarna Kuning ( 1 x 3 ) : Cruiser Ship
-* * * *   Berwarna Biru ( 1 x 4 ) : Battle Ship
-* * * * * Berwarna Ungu ( 1 x 5 ) : Carrier Ship
+* Berwarna Merah ( 1 x 2 ) : Destroyer Ship
+* Berwarna Hijau ( 1 x 3 ) : Submarine Ship
+* Berwarna Kuning ( 1 x 3 ) : Cruiser Ship
+* Berwarna Biru ( 1 x 4 ) : Battle Ship
+* Berwarna Ungu ( 1 x 5 ) : Carrier Ship
 
 Game ini juga memiliki menu leaderboard yang kami ambil berdasarkan poin, poin kami ambil saat player benar menebak kapal dari ai dan juga sebaliknya. Pada leaderboard kami mengambil selisih terbesar kemenangan pada poin player pada ai. Game ini juga memiliki history game yang dapat membantu untuk melihat riwayat permainan pada semua menu dalam permainan battleship.
 
