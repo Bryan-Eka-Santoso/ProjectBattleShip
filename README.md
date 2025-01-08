@@ -54,17 +54,59 @@ Game ini memiliki 2 mode yaitu VS AI dan juga 2 player. Pada VS AI kami memiliki
 <img src="assets_readme/img/setupship.png"/>
 </p>
 Selanjutnya kami memberikan menu untuk meng setup 5 kapal pada map, game ini memiliki fitur randomize untuk me random semua posisi pada 5 kapal pada koordinat koordinat yang berbeda. Game ini juga memiliki fitur rotasi, jadi user bisa merotasi kapal menjadi vertikal maupun horizontal.
-
+<br>
 Pada saat permainan game kami memberikan cheat dengan memasukkan kode cheat yaitu 777 ( rahasia ) untuk melihat semua posisi kapal pada map ai maupun map player sendiri. Saat permainan game kami memberikan fitur yang dapat membantu kapal mana yang tersisa dan juga kapal mana yang belum di temukan dan juga jika koordinat semua kapal di temukan maka di map game ini maka kapal akan di munculkan.
 
 # Array mapBattleShip1
 sebagai map player 1 dan juga map user saat melawan ai.
 
+```c++
+int mapBattleShip[9][11] = {
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+};
+```
+
 # Array mapBattleShip2
 sebagai map player 2 dalam permainan mode 2 player.
 
+```c++
+int mapBattleShip2[9][11] = {
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+};
+```
+
 # Array mapBattleShipAi
 sebagai map ai untuk mode permainan vs ai.
+
+```c++
+int mapBattleShipAi[9][11] = {
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+};
+```
 
 # Array textMenu
 untuk penggambaran animasi tulisan game ini saat game di mulai.
