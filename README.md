@@ -1,3 +1,33 @@
+# C++ Language
+
+<p align="center">
+<img src="other/cpp_logo.png" />
+</p>
+<p align="center">
+    <a href="https://github.com/federico-busato/Modern-CPP-Programming/releases" alt="Release">
+        <img src="https://img.shields.io/github/v/release/federico-busato/Modern-CPP-Programming?style=for-the-badge"/>
+    </a>
+</p>
+
+<p align="center">
+    <a alt="Stars">
+        <img src="https://img.shields.io/github/stars/federico-busato/Modern-CPP-Programming?style=for-the-badge"/>
+    </a>
+    <a href="https://github.com/federico-busato/Modern-CPP-Programming/network/members" alt="Forks">
+        <img src="https://img.shields.io/github/forks/federico-busato/Modern-CPP-Programming?style=for-the-badge"/>
+    </a>
+</p>
+<p align="center">
+    <a href="https://github.com/federico-busato/Modern-CPP-Programming/commits/master" alt="Commits">
+        <img src="https://badgen.net/github/commits/federico-busato/Modern-CPP-Programming?style=for-the-badge&scale=1.2"/>
+    </a>
+</p>
+<p align="center">
+    <a href="https://github.com/federico-busato/Modern-CPP-Programming-Material/issues" alt="Issues">
+        <img src="https://badgen.net/github/closed-issues/federico-busato/Modern-CPP-Programming?style=for-the-badge&scale=1.2"/>
+    </a>
+</p>
+
 # Penjelasan Game Battleship
 
 Game ini memiliki lebar map permainan yaiut 7 x 9 dan memiliki 5 macam kapal dalam permainan yaitu :
