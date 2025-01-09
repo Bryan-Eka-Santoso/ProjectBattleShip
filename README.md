@@ -108,7 +108,7 @@ int mapBattleShipAi[9][11] = {
 };
 ```
 
-# ARRAY textMenu
+# PROCEDURE welcomeText
 untuk penggambaran animasi tulisan game saat game di mulai.
 
 ```c++
