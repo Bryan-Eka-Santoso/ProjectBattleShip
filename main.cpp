@@ -12,7 +12,7 @@
 using namespace std;
 
 char gerak, playInGame;
-string attack, defaultColor = "\033[0m", lightRed = "\033[091m", lightBlue = "\033[094m", lightGreen = "\033[092m", lightBlack = "\033[090m";
+string attack, defaultColor = "\033[0m", lightRed = "\033[091m", lightBlue = "\033[094m", lightGreen = "\033[092m", lightBlack = "\033[090m", lightCyan= "\033[096m";
 int attackAI, destroyerShipLength = 2, submarineShipLength = 3, cruiserShipLength = 3, battleshipShipLength = 4, carrierShipLength = 5;
 int destroyerY = 1, destroyerX = 1, submarineY = 1, submarineX = 1, cruiserY = 1, cruiserX = 1, battleshipY = 1, battleshipX = 1, carrierX = 1, carrierY = 1;
 int destroyer = 2, submarine = 3, cruiser = 4, battleship = 5, carrier = 6;
@@ -1262,48 +1262,65 @@ void attackPhase(int mapBattleShipOne[9][11], int mapBattleShipTwo[9][11], int &
     }
 }
 
-int main()
-{
-    int menu, menuPlayGame, levelGame, selectShip;
-    initializeLeaderboards();
-    int leaderboardChoice,historyChoice;
-
-    int textMenu[16][29] = {
-        {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-        {2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
-        {2, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 2},
-        {2, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 2},
-        {2, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 2},
-        {2, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 2},
-        {2, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 2},
-        {2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
-        {2, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 0, 3, 0, 3, 0, 3, 3, 3, 0, 3, 3, 3, 0, 0, 0, 0, 0, 2},
-        {2, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 3, 0, 3, 0, 0, 3, 0, 0, 3, 0, 0, 3, 0, 0, 0, 0, 2},
-        {2, 0, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 3, 3, 3, 0, 0, 3, 0, 0, 3, 0, 0, 3, 0, 0, 0, 0, 2},
-        {2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 3, 0, 3, 0, 0, 3, 0, 0, 3, 3, 3, 0, 0, 0, 0, 0, 2},
-        {2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 3, 0, 3, 0, 0, 3, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 2},
-        {2, 0, 0, 0, 0, 0, 0, 3, 3, 3, 0, 0, 3, 0, 3, 0, 3, 3, 3, 0, 3, 0, 0, 0, 0, 0, 0, 0, 2},
-        {2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
-        {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}
+void welcomeText(){
+    int textMenu[15][36] = {
+        {2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
+        {2, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 2},
+        {2, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 2},
+        {2, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 2},
+        {2, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 2},
+        {2, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 2},
+        {2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
+        {2, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 0, 0, 3, 0, 3, 0, 0, 3, 3, 3, 0, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 2},
+        {2, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 3, 0, 3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 2},
+        {2, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 3, 3, 3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 2},
+        {2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 3, 0, 3, 0, 0, 0, 3, 0, 0, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 2},
+        {2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 3, 0, 3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
+        {2, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 0, 0, 0, 3, 0, 3, 0, 0, 3, 3, 3, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
+        {2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
+        {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}
     };
 
-    for(int i = 0; i < 16; i++){
-        for(int j = 0; j < 29; j++){
+    cout << lightBlack << "\n# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #"                                    << defaultColor;
+    cout << lightBlack << "\n#" << lightCyan << "                                                                     "                  << lightBlack << "#" << defaultColor; Sleep(100);
+    cout << lightBlack << "\n#" << lightCyan << "                                   # #  ( )                          "                  << lightBlack << "#" << defaultColor; Sleep(100);
+    cout << lightBlack << "\n#" << lightCyan << "                                ___#_#___|__                         "                  << lightBlack << "#" << defaultColor; Sleep(100);
+    cout << lightBlack << "\n#" << lightCyan << "                                ___#_#___|__                         "                  << lightBlack << "#" << defaultColor; Sleep(100);
+    cout << lightBlack << "\n#" << lightCyan << "                            _  |____________|  _                     "                  << lightBlack << "#" << defaultColor; Sleep(100);
+    cout << lightBlack << "\n#" << lightCyan << "                     _=====| | |            | | |==== _              "                  << lightBlack << "#" << defaultColor; Sleep(100);
+    cout << lightBlack << "\n#" << lightCyan << "               =====| |.---------------------------. | |====         "                  << lightBlack << "#" << defaultColor; Sleep(100);
+    cout << lightBlack << "\n#" << lightCyan << " <---------------------'   .  .  .  .  .  .  .  .   '--------------/ "                  << lightBlack << "#" << defaultColor; Sleep(100);
+    cout << lightBlack << "\n#" << lightCyan << "   " << char(92) << "                                                              /  " << lightBlack << "#" << defaultColor; Sleep(100);
+    cout << lightBlack << "\n#" << lightCyan << "    " << char(92) << "____________________________________________________________/   " << lightBlack << "#" << defaultColor; Sleep(100);
+    cout << endl;
+
+    for(int i = 0; i < 15; i++){
+        for(int j = 0; j < 36; j++){
             if (textMenu[i][j] == 1){
-                cout << lightRed << "* " << defaultColor;
-                Sleep(5);
+                cout << lightRed << char(254) << " " << defaultColor;
+                Sleep(10);
             } else if (textMenu[i][j] == 2){
                 cout << lightBlack << "# " << defaultColor;
             } else if (textMenu[i][j] == 3){
-                cout << lightBlue << "* " << defaultColor;
-                Sleep(5);
+                cout << lightBlue << char(254) << " " << defaultColor;
+                Sleep(10);
             } else {
                 cout << "  ";
             }
         }
         cout << endl;
     }
-    Sleep(1500);
+    system("pause");
+}
+
+int main()
+{
+    int menu, menuPlayGame, levelGame, selectShip;
+    initializeLeaderboards();
+    int leaderboardChoice,historyChoice;
+
+    welcomeText();
+
     selectedOpt = 0;
     do {
         displayMenu(selectedOpt, 1, menu);
