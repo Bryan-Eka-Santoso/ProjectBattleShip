@@ -66,6 +66,7 @@ void displayMenu(int selectedOption, int menuChoice, int &pick){
     vector<string> gamemodeMenu = {"VS AI", "2 Player", "Back"};
     vector<string> difficultyMenu = {"\033[32mBeginner\033[0m mode", "\033[33mIntermediate\033[0m mode", "\033[35mAdvanced\033[0m mode", "\033[31mGacor !!!\033[0m", "Back"};
     vector<string> shipMenu = {"\033[31m**\033[0m Destroyer", "\033[32m***\033[0m Submarine", "\033[33m***\033[0m Cruiser", "\033[34m****\033[0m Battleship", "\033[35m*****\033[0m Carrier", "Continue", "Back"};
+    vector<string> lboardAndHistMenu = {"Beginner Mode", "Intermediate Mode", "Advanced Mode", "Gacor !!!", "Back"};
 //    vector<string>
     while (true){
         system("cls");
@@ -93,7 +94,7 @@ void displayMenu(int selectedOption, int menuChoice, int &pick){
             cout << "  Exit" << defaultColor << endl;
         } else if (menuChoice == 3){
             theSize = difficultyMenu.size();
-            cout << "== \033[091mBATTLE\033[094mSHIP\033[0m Artificial Intelligence ==" << endl;
+            cout << "== \033[091mBATTLE\033[094mSHIP\033[0m \033[96mArtificial Intelligence\033[0m ==" << endl;
             cout << "Choose the difficulty of your AI:" << endl;
             for (int i = 0; i < difficultyMenu.size(); i++){
                 if (i == selectedOption)
@@ -117,7 +118,7 @@ void displayMenu(int selectedOption, int menuChoice, int &pick){
                 cout << "== You have selected " << difficultyPick << " Difficulty ==" << endl;
                 cout << "Please set up the position of your ship :" << endl;
             } else if (menuChoice < 10){
-                cout << "== \033[091mBATTLE\033[094mSHIP\033[0m PlayerVSPlayer ==" << endl;
+                cout << "== \033[091mBATTLE\033[094mSHIP\033[0m \033[96mPlayerVSPlayer\033[0m ==" << endl;
                 cout << "Please " << playerPick << " set up the position of your ship :" << endl;
             }
             for (int i = 0; i < shipMenu.size(); i++){
@@ -125,6 +126,34 @@ void displayMenu(int selectedOption, int menuChoice, int &pick){
                     cout << "> " << shipMenu[i] << endl;
                 else
                     cout << "  " << shipMenu[i] << endl;
+            }
+        } else if (menuChoice == 10 || menuChoice == 11){
+            cout << lightBlack << "== Welcome to BATTLESHIP ==" << endl;
+            cout << "  Play Game" << defaultColor << endl;
+            if (menuChoice == 10){
+                theSize = lboardAndHistMenu.size();
+                cout << "  Leaderboard " << lightGreen << "(Selected)" << defaultColor << endl;
+                for (int i = 0; i < lboardAndHistMenu.size(); i++){
+                    if (i == selectedOption)
+                        cout << "  > " << lboardAndHistMenu[i] << endl;
+                    else
+                        cout << "    " << lboardAndHistMenu[i] << endl;
+                }
+                cout << lightBlack << "  History" << endl;
+                cout << "  Exit" << defaultColor << endl;
+            } else {
+                theSize = lboardAndHistMenu.size() + 1;
+                lboardAndHistMenu.insert(lboardAndHistMenu.begin() + 4, "Versus Mode");
+                cout << lightBlack << "  Leaderboard" << defaultColor << endl;
+                cout << "  History " << lightGreen << "(Selected)" << defaultColor << endl;
+                for (int i = 0; i < lboardAndHistMenu.size(); i++){
+                    if (i == selectedOption)
+                        cout << "  > " << lboardAndHistMenu[i] << endl;
+                    else
+                        cout << "    " << lboardAndHistMenu[i] << endl;
+                }
+                cout << lightBlack << "  Exit" << defaultColor << endl;
+                lboardAndHistMenu.erase(lboardAndHistMenu.begin() + 4);
             }
         }
         char key = getch();
@@ -192,7 +221,7 @@ void displayBoardPlay(int mapBattleShip[9][11], string color, bool &cheat, int n
                     if(j == 0 || j == 10){
                         cout << "    ";
                     } else {
-                        if (i == num1){
+                        if (i == 0 || i == 8){
                             char letter = 'a' + j - 1;
                             cout << " " << letter << " ";
                         }
@@ -201,7 +230,7 @@ void displayBoardPlay(int mapBattleShip[9][11], string color, bool &cheat, int n
             } else {
                 for (int j = 0; j < 11; j++) {
                     if (mapBattleShip[i][j] == 1 && j == num2) {
-                        cout << "   ";
+                        cout << " " << i << " ";
                     } else if (mapBattleShip[i][j] == 1){
                         cout << "  " << i << " ";
                     } else if (mapBattleShip[i][j] == 7 && shipInMap[0] == 2){
@@ -242,7 +271,7 @@ void displayBoardPlay(int mapBattleShip[9][11], string color, bool &cheat, int n
                     if(j == 0 || j == 10){
                         cout << "    ";
                     } else {
-                        if (i == num1){
+                        if (i == 0 || i == 8){
                             char letter = 'a' + j - 1;
                             cout << " " << letter << " ";
                         }
@@ -251,7 +280,7 @@ void displayBoardPlay(int mapBattleShip[9][11], string color, bool &cheat, int n
             } else {
                 for (int j = 0; j < 11; j++) {
                     if (mapBattleShip[i][j] == 1 && j == num2){
-                        cout << "   ";
+                        cout << " " << i << " ";
                     } else if (mapBattleShip[i][j] == 1) {
                         cout << "  " << i << " ";
                     } else {
@@ -645,7 +674,7 @@ void displayShipPlay(int mapBattleShip[9][11]){
         }
     }
 
-    cout << setw(5) << " " << destroyerDisplay << " " << submarineDisplay << "  " << cruiserDisplay << "  " << battleshipDisplay << " " << carrierDisplay;
+    cout << setw(5) << "  " << destroyerDisplay << "  " << submarineDisplay << "  " << cruiserDisplay << "  " << battleshipDisplay << "  " << carrierDisplay;
     cout << endl;
 }
 
@@ -947,14 +976,14 @@ void initializeLeaderboards() {
     loadLeaderboard(versusHistory, "versus");
 }
 
-string getUsername() {
+string getUsername(string establishPlayer) {
     string username;
     bool validUsername = false;
 
     while (!validUsername) {
         system("cls");
         cout << "====== Enter Your Username ======\n\n";
-        cout << "Username (3-15 characters): ";
+        cout << establishPlayer << " (3-15 characters): ";
         cin >> username;
 
         if (username.length() < 3 || username.length() > 15) {
@@ -1059,15 +1088,16 @@ void displayLeaderboard(string difficulty) {
         difficultyTitle = "\033[95mADVANCED MODE\033[0m";
     } else {
         currentLeaderboard = &gacorLeaderboard;
-        difficultyTitle = "\033[91mGACOR MODE\033[0m";
+        difficultyTitle = "\033[91mGACOR !!!\033[0m";
     }
 
-    cout << "\n====== LEADERBOARD - " << difficultyTitle << " ======\n\n";
-    cout << setw(5) << "Rank" << setw(15) << "Name" << setw(10) << "Score" << setw(30) << "Date" << endl;
+    cout << "====== LEADERBOARD - " << difficultyTitle << " ======\n\n";
+    cout << left << setw(5) << "Rank" << setw(15) << "Name" << setw(10) << "Score" << setw(30) << "Date" << endl;
     cout << "---------------------------------------------------------------\n";
 
     for(int i = 0; i < min(10, (int)currentLeaderboard->size()); i++) {
-        cout << setw(5) << i + 1
+        cout << left
+             << setw(5) << i + 1
              << setw(15) << (*currentLeaderboard)[i].name
              << setw(10) << (*currentLeaderboard)[i].score
              << setw(30) << (*currentLeaderboard)[i].date;
@@ -1104,16 +1134,17 @@ void displayHistory(string difficulty) {
         difficultyTitle = "\033[95mADVANCED MODE\033[0m";
     } else {
         currentLeaderboard = &gacorLeaderboard;
-        difficultyTitle = "\033[91mGACOR MODE\033[0m";
+        difficultyTitle = "\033[91mGACOR !!!\033[0m";
     }
 
 
-    cout << "\n====== HISTORY - " << difficultyTitle << " ======\n\n";
-    cout << setw(5) << "No" << setw(15) << "Name" << setw(10) << "Score" << setw(30) << "Date" << endl;
+    cout << "====== HISTORY - " << difficultyTitle << " ======\n\n";
+    cout << left << setw(5) << "No" << setw(15) << "Name" << setw(10) << "Score" << setw(30) << "Date" << endl;
     cout << "---------------------------------------------------------------\n";
 
     for(int i = 0; i < min(10, (int)currentLeaderboard->size()); i++) {
-        cout << setw(5) << i + 1
+        cout << left
+             << setw(5) << i + 1
              << setw(15) << (*currentLeaderboard)[i].name
              << setw(10) << (*currentLeaderboard)[i].score
              << setw(30) << (*currentLeaderboard)[i].date;
@@ -1134,9 +1165,9 @@ void displayHistory(string difficulty) {
 void displayHistoryVersus(string difficulty) {
     if(difficulty == "Versus") {
         vector<PlayerScore>* currentLeaderboard = &versusHistory;
-        string difficultyTitle = "\033[96m1V1 MODE\033[0m";
+        string difficultyTitle = "\033[96mVERSUS MODE\033[0m";
 
-        cout << "\n====== HISTORY - " << difficultyTitle << " ======\n\n";
+        cout << "====== HISTORY - " << difficultyTitle << " ======\n\n";
         cout << left
              << setw(5) << "No"
              << setw(15) << "Player 1"
@@ -1273,8 +1304,8 @@ int main()
         cout << endl;
     }
     Sleep(1500);
+    selectedOpt = 0;
     do {
-        selectedOpt = 0;
         displayMenu(selectedOpt, 1, menu);
 
         switch(menu){
@@ -1315,16 +1346,14 @@ int main()
                                                 string attackAI;
 
                                                 do {
-                                                    cout << " ======   AI " << lightRed << "BATTLE" << lightBlue << "SHIP" << defaultColor << "   ======\n" << endl;
+                                                    cout << " =======   AI " << lightRed << "BATTLE" << lightBlue << "SHIP" << defaultColor << "   =======\n" << endl;
                                                     if (ctr % 2 == 0){
                                                         displayBoardPlay(mapBattleShipAi, lightRed, revealShipsCheat, 0, 10);
                                                         displayShipPlay(mapBattleShipAi);
-                                                        cout << endl;
                                                         cout << lightRed << setw(16) << "" << "AI" << defaultColor << endl;
                                                         cout << endl;
-                                                        cout << "--------  \033[92mBEGINNER MODE\033[0m  --------\n" << endl;
+                                                        cout << "---------  \033[92mBEGINNER MODE\033[0m  ---------\n" << endl;
                                                         cout << lightBlue << setw(14) << "" << "PLAYER" << defaultColor << endl;
-                                                        cout << endl;
                                                         displayShipPlay(mapBattleShip);
                                                         displayBoardPlay(mapBattleShip, lightBlue, revealShipsCheat, 8, 10);
                                                         cout << endl;
@@ -1333,9 +1362,8 @@ int main()
                                                         displayShipPlay(mapBattleShipAi);
                                                         cout << lightRed << setw(16) << "" << "AI" << defaultColor << endl;
                                                         cout << endl;
-                                                        cout << "--------  \033[92mBEGINNER MODE\033[0m  --------\n" << endl;
+                                                        cout << "---------  \033[92mBEGINNER MODE\033[0m  ---------\n" << endl;
                                                         cout << lightBlue << setw(14) << "" << "PLAYER" << defaultColor << endl;
-                                                        cout << endl;
                                                         displayShipPlay(mapBattleShip);
                                                         displayBoardPlay(mapBattleShip, lightBlue, revealShipsCheat, 8, 10);
                                                         cout << endl;
@@ -1385,7 +1413,7 @@ int main()
                                                     cout << lightBlue << "You " << defaultColor << "Win !!!";
                                                     Sleep(3000);
 
-                                                    currentPlayerName = getUsername();
+                                                    currentPlayerName = getUsername("Player");
                                                     addToLeaderboard(currentPlayerName, score, "Easy");
 
                                                     system("cls");
@@ -1393,7 +1421,7 @@ int main()
                                                 } else if (ctrAI == 17){
                                                     cout << lightRed << "AI " << defaultColor << "Win !!!";
                                                     Sleep(3000);
-                                                    currentPlayerName = getUsername();
+                                                    currentPlayerName = getUsername("Player");
                                                     addToLeaderboard(currentPlayerName, score, "Easy");
                                                     system("cls");
                                                     break;
@@ -1426,28 +1454,24 @@ int main()
                                                 string attackAI;
 
                                                 do {
-                                                    cout << " ======   AI " << lightRed << "BATTLE" << lightBlue << "SHIP" << defaultColor << "   ======\n" << endl;
+                                                    cout << " =======   AI " << lightRed << "BATTLE" << lightBlue << "SHIP" << defaultColor << "   =======\n" << endl;
                                                     if (ctr % 2 == 0){
                                                         displayBoardPlay(mapBattleShipAi, lightRed, revealShipsCheat, 0, 10);
                                                         displayShipPlay(mapBattleShipAi);
-                                                        cout << endl;
                                                         cout << lightRed << setw(16) << "" << "AI" << defaultColor << endl;
                                                         cout << endl;
-                                                        cout << "------  \033[93mINTERMEDIATE MODE\033[0m  ------\n" << endl;
+                                                        cout << "-------  \033[93mINTERMEDIATE MODE\033[0m  -------\n" << endl;
                                                         cout << lightBlue << setw(14) << "" << "PLAYER" << defaultColor << endl;
-                                                        cout << endl;
                                                         displayShipPlay(mapBattleShip);
                                                         displayBoardPlay(mapBattleShip, lightBlue, revealShipsCheat, 8, 10);
                                                         cout << endl;
                                                     } else {
                                                         displayBoardPlay(mapBattleShipAi, lightRed, revealShipsCheat, 0, 10);
                                                         displayShipPlay(mapBattleShipAi);
-                                                        cout << endl;
                                                         cout << lightRed << setw(16) << "" << "AI" << defaultColor << endl;
                                                         cout << endl;
-                                                        cout << "------  \033[93mINTERMEDIATE MODE\033[0m  ------\n" << endl;
+                                                        cout << "-------  \033[93mINTERMEDIATE MODE\033[0m  -------\n" << endl;
                                                         cout << lightBlue << setw(14) << "" << "PLAYER" << defaultColor << endl;
-                                                        cout << endl;
                                                         displayShipPlay(mapBattleShip);
                                                         displayBoardPlay(mapBattleShip, lightBlue, revealShipsCheat, 8, 10);
                                                         cout << endl;
@@ -1496,14 +1520,14 @@ int main()
                                                 if(ctrWin1 == 17){
                                                     cout << lightBlue << "You " << defaultColor << "Win !!!";
                                                     Sleep(3000);
-                                                    currentPlayerName = getUsername();
+                                                    currentPlayerName = getUsername("Player");
                                                     addToLeaderboard(currentPlayerName, score, "Medium");
                                                     system("cls");
                                                     break;
                                                 } else if (ctrAI == 17){
                                                     cout << lightRed << "AI " << defaultColor << "Win !!!";
                                                     Sleep(3000);
-                                                    currentPlayerName = getUsername();
+                                                    currentPlayerName = getUsername("Player");
                                                     addToLeaderboard(currentPlayerName, score, "Medium");
                                                     system("cls");
                                                     break;
@@ -1536,14 +1560,13 @@ int main()
                                                 string attackAI;
 
                                                 do {
-                                                    cout << " ======   AI " << lightRed << "BATTLE" << lightBlue << "SHIP" << defaultColor << "   ======\n" << endl;
+                                                    cout << " =======   AI " << lightRed << "BATTLE" << lightBlue << "SHIP" << defaultColor << "   =======\n" << endl;
                                                     if (ctr % 2 == 0){
                                                         displayBoardPlay(mapBattleShipAi, lightRed, revealShipsCheat, 0, 10);
                                                         displayShipPlay(mapBattleShipAi);
-                                                        cout << endl;
                                                         cout << lightRed << setw(16) << "" << "AI" << defaultColor << endl;
                                                         cout << endl;
-                                                        cout << "--------  \033[95mADVANCED MODE\033[0m  --------\n" << endl;
+                                                        cout << "---------  \033[95mADVANCED MODE\033[0m  ---------\n" << endl;
                                                         cout << lightBlue << setw(14) << "" << "PLAYER" << defaultColor << endl;
                                                         displayShipPlay(mapBattleShip);
                                                         displayBoardPlay(mapBattleShip, lightBlue, revealShipsCheat, 8, 10);
@@ -1551,12 +1574,10 @@ int main()
                                                     } else {
                                                         displayBoardPlay(mapBattleShipAi, lightRed, revealShipsCheat, 0, 10);
                                                         displayShipPlay(mapBattleShipAi);
-                                                        cout << endl;
                                                         cout << lightRed << setw(16) << "" << "AI" << defaultColor << endl;
                                                         cout << endl;
-                                                        cout << "--------  \033[95mADVANCED MODE\033[0m  --------\n" << endl;
+                                                        cout << "---------  \033[95mADVANCED MODE\033[0m  ---------\n" << endl;
                                                         cout << lightBlue << setw(14) << "" << "PLAYER" << defaultColor << endl;
-                                                        cout << endl;
                                                         displayShipPlay(mapBattleShip);
                                                         displayBoardPlay(mapBattleShip, lightBlue, revealShipsCheat, 8, 10);
                                                         cout << endl;
@@ -1605,14 +1626,14 @@ int main()
                                                 if(ctrWin1 == 17){
                                                     cout << lightBlue << "You " << defaultColor << "Win !!!";
                                                     Sleep(3000);
-                                                    currentPlayerName = getUsername();
+                                                    currentPlayerName = getUsername("Player");
                                                     addToLeaderboard(currentPlayerName, score, "Hard");
                                                     system("cls");
                                                     break;
                                                 } else if (ctrAI == 17){
                                                     cout << lightRed << "AI " << defaultColor << "Win !!!";
                                                     Sleep(3000);
-                                                    currentPlayerName = getUsername();
+                                                    currentPlayerName = getUsername("Player");
                                                     addToLeaderboard(currentPlayerName, score, "Hard");
                                                     system("cls");
                                                     break;
@@ -1645,28 +1666,24 @@ int main()
                                                 string attackAI;
 
                                                 do {
-                                                    cout << " ======   AI " << lightRed << "BATTLE" << lightBlue << "SHIP" << defaultColor << "   ======\n" << endl;
+                                                    cout << " =======   AI " << lightRed << "BATTLE" << lightBlue << "SHIP" << defaultColor << "   =======\n" << endl;
                                                     if (ctr % 2 == 0){
                                                         displayBoardPlay(mapBattleShipAi, lightRed, revealShipsCheat, 0, 10);
                                                         displayShipPlay(mapBattleShipAi);
-                                                        cout << endl;
                                                         cout << lightRed << setw(16) << "" << "AI" << defaultColor << endl;
                                                         cout << endl;
-                                                        cout << "----------  \033[91mGACOR !!!\033[0m  ----------\n" << endl;
+                                                        cout << "-----------  \033[91mGACOR !!!\033[0m  -----------\n" << endl;
                                                         cout << lightBlue << setw(14) << "" << "PLAYER" << defaultColor << endl;
-                                                        cout << endl;
                                                         displayShipPlay(mapBattleShip);
                                                         displayBoardPlay(mapBattleShip, lightBlue, revealShipsCheat, 8, 10);
                                                         cout << endl;
                                                     } else {
                                                         displayBoardPlay(mapBattleShipAi, lightRed, revealShipsCheat, 0, 10);
                                                         displayShipPlay(mapBattleShipAi);
-                                                        cout << endl;
                                                         cout << lightRed << setw(16) << "" << "AI" << defaultColor << endl;
                                                         cout << endl;
-                                                        cout << "----------  \033[91mGACOR !!!\033[0m  ----------\n" << endl;
+                                                        cout << "-----------  \033[91mGACOR !!!\033[0m  -----------\n" << endl;
                                                         cout << lightBlue << setw(14) << "" << "PLAYER" << defaultColor << endl;
-                                                        cout << endl;
                                                         displayShipPlay(mapBattleShip);
                                                         displayBoardPlay(mapBattleShip, lightBlue, revealShipsCheat, 8, 10);
                                                         cout << endl;
@@ -1715,14 +1732,14 @@ int main()
                                                 if(ctrWin1 == 17){
                                                     cout << lightBlue << "You " << defaultColor << "Win !!!";
                                                     Sleep(3000);
-                                                    currentPlayerName = getUsername();
+                                                    currentPlayerName = getUsername("Player");
                                                     addToLeaderboard(currentPlayerName, score, "Gacor");
                                                     system("cls");
                                                     break;
                                                 } else if (ctrAI == 17){
                                                     cout << lightRed << "AI " << defaultColor << "Win !!!";
                                                     Sleep(3000);
-                                                    currentPlayerName = getUsername();
+                                                    currentPlayerName = getUsername("Player");
                                                     addToLeaderboard(currentPlayerName, score, "Gacor");
                                                     system("cls");
                                                     break;
@@ -1752,13 +1769,13 @@ int main()
 
                             if (play){
                                 play = false;
+                                selectedOpt = 0;
                                 resetMapAndShips(mapBattleShip2);
-
                                 do {
                                     displayMenu(selectedOpt, 9, selectShip);
 
-                                done = false;
-                                positioningShips(mapBattleShip2, play, selectShip);
+                                    done = false;
+                                    positioningShips(mapBattleShip2, play, selectShip);
                             } while (selectShip != 7 && !play);
                             system("cls");
 
@@ -1770,13 +1787,14 @@ int main()
                                     int ctrShip;
 
                                     do {
-                                        cout << " ======   VS " << lightRed << "BATTLE" << lightBlue << "SHIP"<< defaultColor << "   ======\n" << endl;
+                                        cout << " =======   VS " << lightRed << "BATTLE" << lightBlue << "SHIP"<< defaultColor << "   =======\n" << endl;
                                         if (ctr % 2 == 0){
                                             displayBoardPlay(mapBattleShip2, lightRed, revealShipsCheat, 0, 10);
                                             displayShipPlay(mapBattleShip2);
-                                            cout << endl;
                                             cout << lightRed << setw(13) << "" << "PLAYER 2" << defaultColor << endl;
-                                            cout << "---------------------------------" << endl;
+                                            cout << endl;
+                                            cout << "----------  \033[96mVERSUS MODE\033[0m  ----------" << endl;
+                                            cout << endl;
                                             cout << lightBlue << setw(13) << "" << "PLAYER 1" << defaultColor << endl;
                                             displayShipPlay(mapBattleShip);
                                             displayBoardPlay(mapBattleShip, lightBlue, revealShipsCheat, 8, 10);
@@ -1784,9 +1802,10 @@ int main()
                                         } else {
                                             displayBoardPlay(mapBattleShip, lightBlue, revealShipsCheat, 0, 10);
                                             displayShipPlay(mapBattleShip);
-                                            cout << endl;
                                             cout << lightBlue << setw(13) << "" << "PLAYER 1" << defaultColor << endl;
-                                            cout << "---------------------------------" << endl;
+                                            cout << endl;
+                                            cout << "----------  \033[96mVERSUS MODE\033[0m  ----------" << endl;
+                                            cout << endl;
                                             cout << lightRed << setw(13) << "" << "PLAYER 2" << defaultColor << endl;
                                             displayShipPlay(mapBattleShip2);
                                             displayBoardPlay(mapBattleShip2, lightRed, revealShipsCheat, 8, 10);
@@ -1835,8 +1854,8 @@ int main()
                                         cout << lightBlue << "Player 1 " << defaultColor << "Win !!!";
                                         Sleep(3000);
 
-                                        string player1Name = getUsername();
-                                        string player2Name = getUsername();
+                                        string player1Name = getUsername("Player 1");
+                                        string player2Name = getUsername("Player 2");
 
                                         addToLeaderboard(player1Name, score, player2Name, score2, "Versus");
 
@@ -1846,8 +1865,8 @@ int main()
                                         cout << lightRed << "Player 2 " << defaultColor << "Win !!!";
                                         Sleep(3000);
 
-                                        string player1Name = getUsername();
-                                        string player2Name = getUsername();
+                                        string player1Name = getUsername("Player 1");
+                                        string player2Name = getUsername("Player 2");
 
                                         addToLeaderboard(player1Name, score, player2Name, score2, "Versus");
 
@@ -1861,78 +1880,76 @@ int main()
                         }
                     }
                 } while (menuPlayGame != 3);
+            selectedOpt = 0;
             break;
             }
             case 2:{
                 int leaderboardChoice;
+                selectedOpt = 0;
                 do {
-                        cout << "== LEADERBOARD MENU ==\n";
-                        cout << "1. Beginner Mode Leaderboard\n";
-                        cout << "2. Intermediate Mode Leaderboard\n";
-                        cout << "3. Advanced Mode Leaderboard\n";
-                        cout << "4. Gacor Mode Leaderboard\n";
-                        cout << "5. Back to Main Menu\n";
-                        cout << "Enter your choice: ";
-                        cin >> leaderboardChoice;
+                        displayMenu(selectedOpt, 10, leaderboardChoice);
 
                 switch(leaderboardChoice) {
                     case 1:
                         system("cls");
                         displayLeaderboard("Easy");
+                        selectedOpt = 0;
                         break;
                     case 2:
                         system("cls");
                         displayLeaderboard("Medium");
+                        selectedOpt = 1;
                         break;
                     case 3:
                         system("cls");
                         displayLeaderboard("Hard");
+                        selectedOpt = 2;
                         break;
                     case 4:
                         system("cls");
                         displayLeaderboard("Gacor");
+                        selectedOpt = 3;
                         break;
                         }
                     } while(leaderboardChoice != 5);
+                selectedOpt = 1;
                 break;
             }
 
             case 3:{
+                selectedOpt = 0;
                 do {
-                        cout << "== HISTORY MENU ==\n";
-                        cout << "1. Beginner Mode History\n";
-                        cout << "2. Intermediate Mode History\n";
-                        cout << "3. Advanced Mode History\n";
-                        cout << "4. Gacor Mode History\n";
-                        cout << "5. 1v1 Mode History\n";
-                        cout << "6. Back to Main Menu\n";
-                        cout << "Enter your choice: ";
-                        cin >> historyChoice;
+                    displayMenu(selectedOpt, 11, historyChoice);
 
                 switch(historyChoice) {
                     case 1:
                         system("cls");
                         displayHistory("Easy");
+                        selectedOpt = 0;
                         break;
                     case 2:
                         system("cls");
                         displayHistory("Medium");
+                        selectedOpt = 1;
                         break;
                     case 3:
                         system("cls");
                         displayHistory("Hard");
+                        selectedOpt = 2;
                         break;
                     case 4:
                         system("cls");
                         displayHistory("Gacor");
+                        selectedOpt = 3;
                         break;
                     case 5:
                         system("cls");
                         displayHistoryVersus("Versus");
+                        selectedOpt = 4;
                         break;
                         }
                     } while(historyChoice != 6);
-
+                    selectedOpt = 2;
                     break;
             }
             break;
