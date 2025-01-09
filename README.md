@@ -164,13 +164,16 @@ untuk menggerakkan kapal saat setup pada map player. Pada procedure ini berisi c
 # PROCEDURE spawnShip
 untuk memastikan kapal muncul saat awal setup dengan posisi horizontal atau vertical.
 
+# FUNCTION availableSpot
+untuk pengecekan sebelum meletakkan kapal. Jika pada spawn terdapat nilai dari kapal lain pada mapBattleShip, maka function akan mengembalikan false. Sebaliknya jika pada spawn hanya terdapat nilai 0, function akan mengembalikan true.
+
 # PROCEDURE deployShip
 untuk menu saat menggerakkan kapal sesuai dengan kapal yang user pilih dengan memanggil procedure displayBoard untuk memunculkan map nya.
 
 # PROCEDURE placeOneShipRandomly
 untuk memposisikan posisi yang di random pada 1 kapal.
 
-# PROCEDURE placeAllShipRandomly
+# PROCEDURE placeAllShipsRandomly
 untuk memposisikan posisi yang di random pada semua kapal dan juga pengecekan ketersediaan map agar kapal tidak bertabrakan.
 
 # PROCEDURE deployAndOperateShip
