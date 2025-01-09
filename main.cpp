@@ -164,6 +164,7 @@ void displayMenu(int selectedOption, int menuChoice, int &pick){
             selectedOption = (selectedOption + 1) % theSize;
         }
         else if (key == '\r') {
+            Beep(500, 80);
             system("cls");
             pick = selectedOption + 1;
             break;
@@ -1400,6 +1401,7 @@ int main()
                                                         ctr++;
                                                         cout << lightBlue << "Player 1" << defaultColor << "'s turn!\nEnter your attack coordinates (ex." << lightRed << " b6, f2" << defaultColor << "): " << lightRed;
                                                         cin >> attack;
+                                                        Beep(500, 80);
                                                         cout << defaultColor;
                                                     } else {
                                                         ctr++;
@@ -1508,6 +1510,7 @@ int main()
                                                         ctr++;
                                                         cout << lightBlue << "Player 1" << defaultColor << "'s turn!\nEnter your attack coordinates (ex." << lightRed << " d1, a5" << defaultColor << "): " << lightRed;
                                                         cin >> attack;
+                                                        Beep(500, 80);
                                                         cout << defaultColor;
                                                     } else {
                                                         ctr++;
@@ -1614,6 +1617,7 @@ int main()
                                                         ctr++;
                                                         cout << lightBlue << "Player 1" << defaultColor << "'s turn!\nEnter your attack coordinates (ex." << lightRed << " b1, d6" << defaultColor << "): " << lightRed;
                                                         cin >> attack;
+                                                        Beep(500, 80);
                                                         cout << defaultColor;
                                                     } else {
                                                         ctr++;
@@ -1720,6 +1724,7 @@ int main()
                                                         ctr++;
                                                         cout << lightBlue << "Player 1" << defaultColor << "'s turn!\nEnter your attack coordinates (ex." << lightRed << " f4, i1" << defaultColor << "): " << lightRed;
                                                         cin >> attack;
+                                                        Beep(500, 80);
                                                         cout << defaultColor;
                                                     } else {
                                                         ctr++;
@@ -1850,7 +1855,7 @@ int main()
                                             cin >> attack;
                                             cout << defaultColor;
                                         }
-
+                                        Beep(500, 80);
                                         if (attack == "777"){
                                             ctr--;
                                             if (!revealShipsCheat){
@@ -1985,3 +1990,11 @@ int main()
 
     return 0;
 }
+
+
+
+/* Sekian dan Terima Kasih
+1. Bryan Eka Santoso - 224117122
+2. Matthew Aprilian - 224117137
+3. Valentino Kenny Hartanto - 224117142
+*/
