@@ -6,6 +6,8 @@
 #include <ctime>
 #include <string>
 #include <iomanip>
+#include <fstream>
+#include <algorithm>
 
 using namespace std;
 
@@ -18,6 +20,8 @@ bool isHrDestroyer = true, isHrSubmarine = true, isHrCruiser = true, isHrBattles
 bool play, done;
 int selectedOpt;
 bool canBePlaced;
+int score, score2;
+string currentPlayerName;
 
 int mapBattleShip[9][11] = {
     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -840,6 +844,329 @@ void positioningShips(int mapBattleShip[9][11], bool &play, int selectShip){
     }
 }
 
+struct PlayerScore {
+    string name;
+    int score;
+    string name2;
+    int score2;
+    string date;
+    bool isVersusMode;
+};
+
+vector<PlayerScore> easyLeaderboard;
+vector<PlayerScore> mediumLeaderboard;
+vector<PlayerScore> hardLeaderboard;
+vector<PlayerScore> gacorLeaderboard;
+vector<PlayerScore> versusHistory;
+
+void loadLeaderboard(vector<PlayerScore>& leaderboard, string type) {
+    ifstream file("leaderboard_" + type + ".txt");
+    if(file.is_open()) {
+        leaderboard.clear();
+        string line;
+        while(getline(file, line)) {
+            try {
+                PlayerScore score;
+                size_t pos1 = line.find(",");
+                if(pos1 == string::npos) continue;
+
+                size_t pos2 = line.find(",", pos1 + 1);
+                if(pos2 == string::npos) continue;
+
+                if(type == "versus") {
+
+                    score.name = line.substr(0, pos1);
+                    score.score = stoi(line.substr(pos1 + 1, pos2 - pos1 - 1));
+
+                    string remainingData = line.substr(pos2 + 1);
+                    size_t commaPos = remainingData.find(",");
+                    if(commaPos != string::npos) {
+                        score.name2 = remainingData.substr(0, commaPos);
+                        remainingData = remainingData.substr(commaPos + 1);
+
+                        commaPos = remainingData.find(",");
+                        if(commaPos != string::npos) {
+                            score.score2 = stoi(remainingData.substr(0, commaPos));
+                            score.date = remainingData.substr(commaPos + 1);
+                        }
+                    }
+                } else {
+
+                    score.name = line.substr(0, pos1);
+                    score.score = stoi(line.substr(pos1 + 1, pos2 - pos1 - 1));
+                    score.date = line.substr(pos2 + 1);
+                }
+
+                score.isVersusMode = (type == "versus");
+                leaderboard.push_back(score);
+            } catch(const std::exception& e) {
+                continue;
+            }
+        }
+        file.close();
+
+        if(type == "versus") {
+            sort(leaderboard.begin(), leaderboard.end(),
+                 [](const PlayerScore& a, const PlayerScore& b) {
+                     return (a.score + a.score2) > (b.score + b.score2);
+                 });
+        } else {
+            sort(leaderboard.begin(), leaderboard.end(),
+                 [](const PlayerScore& a, const PlayerScore& b) {
+                     return a.score > b.score;
+                 });
+        }
+    }
+}
+
+void saveLeaderboard(const vector<PlayerScore>& leaderboard, string type) {
+    ofstream file("leaderboard_" + type + ".txt");
+    if(file.is_open()) {
+        for(const auto& score : leaderboard) {
+            if(type == "versus") {
+                file << score.name << ","
+                     << score.score << ","
+                     << score.name2 << ","
+                     << score.score2 << ","
+                     << score.date << "\n";
+            } else {
+                file << score.name << ","
+                     << score.score << ","
+                     << score.date << "\n";
+            }
+        }
+        file.close();
+    }
+}
+
+void initializeLeaderboards() {
+    loadLeaderboard(easyLeaderboard, "easy");
+    loadLeaderboard(mediumLeaderboard, "medium");
+    loadLeaderboard(hardLeaderboard, "hard");
+    loadLeaderboard(gacorLeaderboard, "gacor");
+    loadLeaderboard(versusHistory, "versus");
+}
+
+string getUsername() {
+    string username;
+    bool validUsername = false;
+
+    while (!validUsername) {
+        system("cls");
+        cout << "====== Enter Your Username ======\n\n";
+        cout << "Username (3-15 characters): ";
+        cin >> username;
+
+        if (username.length() < 3 || username.length() > 15) {
+            cout << "\nUsername must be between 3 and 15 characters!\n";
+            Sleep(1500);
+            continue;
+        }
+
+        bool hasInvalidChar = false;
+        for (char c : username) {
+            if (!isalnum(c)) {
+                hasInvalidChar = true;
+                break;
+            }
+        }
+
+        if (hasInvalidChar) {
+            cout << "\nUsername can only contain letters and numbers!\n";
+            Sleep(1500);
+            continue;
+        }
+
+        validUsername = true;
+    }
+
+    return username;
+}
+
+void addToLeaderboard(string name, int score, string difficulty, bool isVersus = false) {
+    PlayerScore newScore;
+    newScore.name = name;
+    newScore.score = score;
+    newScore.name2 = "";
+    newScore.score2 = 0;
+
+    time_t now = time(0);
+    char* dt = ctime(&now);
+    newScore.date = dt;
+    newScore.isVersusMode = isVersus;
+
+    vector<PlayerScore>* targetLeaderboard = nullptr;
+    string saveType;
+
+    if(difficulty == "Easy") {
+        targetLeaderboard = &easyLeaderboard;
+        saveType = "easy";
+    } else if(difficulty == "Medium") {
+        targetLeaderboard = &mediumLeaderboard;
+        saveType = "medium";
+    } else if(difficulty == "Hard") {
+        targetLeaderboard = &hardLeaderboard;
+        saveType = "hard";
+    } else if(difficulty == "Gacor") {
+        targetLeaderboard = &gacorLeaderboard;
+        saveType = "gacor";
+    }
+
+    if(targetLeaderboard != nullptr) {
+        targetLeaderboard->push_back(newScore);
+        sort(targetLeaderboard->begin(), targetLeaderboard->end(),
+             [](const PlayerScore& a, const PlayerScore& b) {
+                 return a.score > b.score;
+             });
+        saveLeaderboard(*targetLeaderboard, saveType);
+    }
+}
+
+void addToLeaderboard(string name1, int score1, string name2, int score2, string difficulty) {
+    PlayerScore newScore;
+    newScore.name = name1;
+    newScore.score = score1;
+    newScore.name2 = name2;
+    newScore.score2 = score2;
+
+    time_t now = time(0);
+    char* dt = ctime(&now);
+    newScore.date = dt;
+    newScore.isVersusMode = true;
+
+    if(difficulty == "Versus") {
+        versusHistory.push_back(newScore);
+        sort(versusHistory.begin(), versusHistory.end(),
+             [](const PlayerScore& a, const PlayerScore& b) {
+                 return (a.score + a.score2) > (b.score + b.score2);
+             });
+        saveLeaderboard(versusHistory, "versus");
+    }
+}
+
+void displayLeaderboard(string difficulty) {
+    vector<PlayerScore>* currentLeaderboard;
+    string difficultyTitle;
+
+    if(difficulty == "Easy") {
+        currentLeaderboard = &easyLeaderboard;
+        difficultyTitle = "\033[92mBEGINNER MODE\033[0m";
+    } else if(difficulty == "Medium") {
+        currentLeaderboard = &mediumLeaderboard;
+        difficultyTitle = "\033[93mINTERMEDIATE MODE\033[0m";
+    } else if(difficulty == "Hard") {
+        currentLeaderboard = &hardLeaderboard;
+        difficultyTitle = "\033[95mADVANCED MODE\033[0m";
+    } else {
+        currentLeaderboard = &gacorLeaderboard;
+        difficultyTitle = "\033[91mGACOR MODE\033[0m";
+    }
+
+    cout << "\n====== LEADERBOARD - " << difficultyTitle << " ======\n\n";
+    cout << setw(5) << "Rank" << setw(15) << "Name" << setw(10) << "Score" << setw(30) << "Date" << endl;
+    cout << "---------------------------------------------------------------\n";
+
+    for(int i = 0; i < min(10, (int)currentLeaderboard->size()); i++) {
+        cout << setw(5) << i + 1
+             << setw(15) << (*currentLeaderboard)[i].name
+             << setw(10) << (*currentLeaderboard)[i].score
+             << setw(30) << (*currentLeaderboard)[i].date;
+
+             cout << endl;
+             cout << endl;
+    }
+
+    if(currentLeaderboard->empty()) {
+        cout << "\nNo scores recorded yet!\n";
+    }
+
+    cout << "\nPress any key to continue...";
+    _getch();
+    system("cls");
+}
+
+void displayHistory(string difficulty) {
+    vector<PlayerScore>* currentLeaderboard;
+    string difficultyTitle;
+
+    if(difficulty == "Versus") {
+        currentLeaderboard = &versusHistory;
+        difficultyTitle = "\033[96m1V1 MODE\033[0m";
+    }
+    else if(difficulty == "Easy") {
+        currentLeaderboard = &easyLeaderboard;
+        difficultyTitle = "\033[92mBEGINNER MODE\033[0m";
+    } else if(difficulty == "Medium") {
+        currentLeaderboard = &mediumLeaderboard;
+        difficultyTitle = "\033[93mINTERMEDIATE MODE\033[0m";
+    } else if(difficulty == "Hard") {
+        currentLeaderboard = &hardLeaderboard;
+        difficultyTitle = "\033[95mADVANCED MODE\033[0m";
+    } else {
+        currentLeaderboard = &gacorLeaderboard;
+        difficultyTitle = "\033[91mGACOR MODE\033[0m";
+    }
+
+
+    cout << "\n====== HISTORY - " << difficultyTitle << " ======\n\n";
+    cout << setw(5) << "No" << setw(15) << "Name" << setw(10) << "Score" << setw(30) << "Date" << endl;
+    cout << "---------------------------------------------------------------\n";
+
+    for(int i = 0; i < min(10, (int)currentLeaderboard->size()); i++) {
+        cout << setw(5) << i + 1
+             << setw(15) << (*currentLeaderboard)[i].name
+             << setw(10) << (*currentLeaderboard)[i].score
+             << setw(30) << (*currentLeaderboard)[i].date;
+        cout << endl;
+        cout << endl;
+    }
+
+    if(currentLeaderboard->empty()) {
+        cout << "\nNo scores recorded yet!\n";
+    }
+
+    cout << "\nPress any key to continue...";
+    _getch();
+
+    system("cls");
+}
+
+void displayHistoryVersus(string difficulty) {
+    if(difficulty == "Versus") {
+        vector<PlayerScore>* currentLeaderboard = &versusHistory;
+        string difficultyTitle = "\033[96m1V1 MODE\033[0m";
+
+        cout << "\n====== HISTORY - " << difficultyTitle << " ======\n\n";
+        cout << left
+             << setw(5) << "No"
+             << setw(15) << "Player 1"
+             << setw(10) << "Score 1"
+             << setw(15) << "Player 2"
+             << setw(10) << "Score 2"
+             << "Date" << endl;
+        cout << "------------------------------------------------------------------------\n";
+
+        for(int i = 0; i < min(10, (int)currentLeaderboard->size()); i++) {
+            cout << left
+                 << setw(5) << (i + 1)
+                 << setw(15) << (*currentLeaderboard)[i].name
+                 << setw(10) << (*currentLeaderboard)[i].score
+                 << setw(15) << (*currentLeaderboard)[i].name2
+                 << setw(10) << (*currentLeaderboard)[i].score2
+                 << (*currentLeaderboard)[i].date;
+            cout << endl;
+        }
+
+        if(currentLeaderboard->empty()) {
+            cout << "\nNo scores recorded yet!\n";
+        }
+
+        cout << "\nPress any key to continue...";
+        _getch();
+        system("cls");
+    }
+}
+
 void attackPhase(int mapBattleShipOne[9][11], int mapBattleShipTwo[9][11], int &ctr, int &aiShip, int &plyrOnePoint, int &plyrTwoPoint, string attack1, string attack2 ,string AIorVS){
     if(ctr % 2 == 0){
         int y = processCoordinates(attack1) % 10;
@@ -862,6 +1189,7 @@ void attackPhase(int mapBattleShipOne[9][11], int mapBattleShipTwo[9][11], int &
             }
             ctr--;
             plyrTwoPoint++;
+            score2 += 20;
             if (AIorVS == "AI")
                 aiShip--;
 
@@ -893,6 +1221,7 @@ void attackPhase(int mapBattleShipOne[9][11], int mapBattleShipTwo[9][11], int &
             }
             ctr--;
             plyrOnePoint++;
+            score += 20;
             cout << 17 - plyrOnePoint << " more points to go!";
         } else {
             ctr--;
@@ -902,10 +1231,11 @@ void attackPhase(int mapBattleShipOne[9][11], int mapBattleShipTwo[9][11], int &
     }
 }
 
-
 int main()
 {
     int menu, menuPlayGame, levelGame, selectShip;
+    initializeLeaderboards();
+    int leaderboardChoice,historyChoice;
 
     int textMenu[16][29] = {
         {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
@@ -1054,11 +1384,17 @@ int main()
                                                 if(ctrWin1 == 17){
                                                     cout << lightBlue << "You " << defaultColor << "Win !!!";
                                                     Sleep(3000);
+
+                                                    currentPlayerName = getUsername();
+                                                    addToLeaderboard(currentPlayerName, score, "Easy");
+
                                                     system("cls");
                                                     break;
                                                 } else if (ctrAI == 17){
                                                     cout << lightRed << "AI " << defaultColor << "Win !!!";
                                                     Sleep(3000);
+                                                    currentPlayerName = getUsername();
+                                                    addToLeaderboard(currentPlayerName, score, "Easy");
                                                     system("cls");
                                                     break;
                                                 }
@@ -1160,11 +1496,15 @@ int main()
                                                 if(ctrWin1 == 17){
                                                     cout << lightBlue << "You " << defaultColor << "Win !!!";
                                                     Sleep(3000);
+                                                    currentPlayerName = getUsername();
+                                                    addToLeaderboard(currentPlayerName, score, "Medium");
                                                     system("cls");
                                                     break;
                                                 } else if (ctrAI == 17){
                                                     cout << lightRed << "AI " << defaultColor << "Win !!!";
                                                     Sleep(3000);
+                                                    currentPlayerName = getUsername();
+                                                    addToLeaderboard(currentPlayerName, score, "Medium");
                                                     system("cls");
                                                     break;
                                                 }
@@ -1265,15 +1605,20 @@ int main()
                                                 if(ctrWin1 == 17){
                                                     cout << lightBlue << "You " << defaultColor << "Win !!!";
                                                     Sleep(3000);
+                                                    currentPlayerName = getUsername();
+                                                    addToLeaderboard(currentPlayerName, score, "Hard");
                                                     system("cls");
                                                     break;
                                                 } else if (ctrAI == 17){
                                                     cout << lightRed << "AI " << defaultColor << "Win !!!";
                                                     Sleep(3000);
+                                                    currentPlayerName = getUsername();
+                                                    addToLeaderboard(currentPlayerName, score, "Hard");
                                                     system("cls");
                                                     break;
                                                 }
                                             }
+
                                         break;
                                         }
                                         case 4:{
@@ -1370,11 +1715,15 @@ int main()
                                                 if(ctrWin1 == 17){
                                                     cout << lightBlue << "You " << defaultColor << "Win !!!";
                                                     Sleep(3000);
+                                                    currentPlayerName = getUsername();
+                                                    addToLeaderboard(currentPlayerName, score, "Gacor");
                                                     system("cls");
                                                     break;
                                                 } else if (ctrAI == 17){
                                                     cout << lightRed << "AI " << defaultColor << "Win !!!";
                                                     Sleep(3000);
+                                                    currentPlayerName = getUsername();
+                                                    addToLeaderboard(currentPlayerName, score, "Gacor");
                                                     system("cls");
                                                     break;
                                                 }
@@ -1384,6 +1733,7 @@ int main()
                                     }
                             } while (levelGame != 5);
                         selectedOpt = 0;
+
                         break;
                         }
                         case 2:{
@@ -1484,11 +1834,23 @@ int main()
                                     if(ctrWin1 == 17){
                                         cout << lightBlue << "Player 1 " << defaultColor << "Win !!!";
                                         Sleep(3000);
+
+                                        string player1Name = getUsername();
+                                        string player2Name = getUsername();
+
+                                        addToLeaderboard(player1Name, score, player2Name, score2, "Versus");
+
                                         system("cls");
                                         break;
                                     } else if (ctrWin2 == 17){
                                         cout << lightRed << "Player 2 " << defaultColor << "Win !!!";
                                         Sleep(3000);
+
+                                        string player1Name = getUsername();
+                                        string player2Name = getUsername();
+
+                                        addToLeaderboard(player1Name, score, player2Name, score2, "Versus");
+
                                         system("cls");
                                         break;
                                     }
@@ -1502,14 +1864,80 @@ int main()
             break;
             }
             case 2:{
-                cout << "Leaderboard" << endl;
-            break;
+                int leaderboardChoice;
+                do {
+                        cout << "== LEADERBOARD MENU ==\n";
+                        cout << "1. Beginner Mode Leaderboard\n";
+                        cout << "2. Intermediate Mode Leaderboard\n";
+                        cout << "3. Advanced Mode Leaderboard\n";
+                        cout << "4. Gacor Mode Leaderboard\n";
+                        cout << "5. Back to Main Menu\n";
+                        cout << "Enter your choice: ";
+                        cin >> leaderboardChoice;
+
+                switch(leaderboardChoice) {
+                    case 1:
+                        system("cls");
+                        displayLeaderboard("Easy");
+                        break;
+                    case 2:
+                        system("cls");
+                        displayLeaderboard("Medium");
+                        break;
+                    case 3:
+                        system("cls");
+                        displayLeaderboard("Hard");
+                        break;
+                    case 4:
+                        system("cls");
+                        displayLeaderboard("Gacor");
+                        break;
+                        }
+                    } while(leaderboardChoice != 5);
+                break;
             }
+
             case 3:{
-                cout << "History" << endl;
-            break;
+                do {
+                        cout << "== HISTORY MENU ==\n";
+                        cout << "1. Beginner Mode History\n";
+                        cout << "2. Intermediate Mode History\n";
+                        cout << "3. Advanced Mode History\n";
+                        cout << "4. Gacor Mode History\n";
+                        cout << "5. 1v1 Mode History\n";
+                        cout << "6. Back to Main Menu\n";
+                        cout << "Enter your choice: ";
+                        cin >> historyChoice;
+
+                switch(historyChoice) {
+                    case 1:
+                        system("cls");
+                        displayHistory("Easy");
+                        break;
+                    case 2:
+                        system("cls");
+                        displayHistory("Medium");
+                        break;
+                    case 3:
+                        system("cls");
+                        displayHistory("Hard");
+                        break;
+                    case 4:
+                        system("cls");
+                        displayHistory("Gacor");
+                        break;
+                    case 5:
+                        system("cls");
+                        displayHistoryVersus("Versus");
+                        break;
+                        }
+                    } while(historyChoice != 6);
+
+                    break;
             }
+            break;
         }
     } while (menu != 4);
+
     return 0;
 }
