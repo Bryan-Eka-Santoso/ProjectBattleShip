@@ -1012,17 +1012,17 @@ string getUsername(string establishPlayer) {
     return username;
 }
 
-void addToLeaderboard(string name, int score, string difficulty, bool isVersus = false) {
+void addToLeaderboard(string name, int playerScore, string difficulty) {
     PlayerScore newScore;
     newScore.name = name;
-    newScore.score = score;
-    newScore.name2 = "";
-    newScore.score2 = 0;
+    newScore.score = playerScore;
+    newScore.name2 = "AI";
+    newScore.score2 = 340 - playerScore;
 
     time_t now = time(0);
     char* dt = ctime(&now);
     newScore.date = dt;
-    newScore.isVersusMode = isVersus;
+    newScore.isVersusMode = false;
 
     vector<PlayerScore>* targetLeaderboard = nullptr;
     string saveType;
@@ -1139,15 +1139,24 @@ void displayHistory(string difficulty) {
 
 
     cout << "====== HISTORY - " << difficultyTitle << " ======\n\n";
-    cout << left << setw(5) << "No" << setw(15) << "Name" << setw(10) << "Score" << setw(30) << "Date" << endl;
-    cout << "---------------------------------------------------------------\n";
+    cout << left
+         << setw(5) << "No"
+         << setw(15) << "Player"
+         << setw(10) << "Score"
+         << setw(15) << "AI"
+         << setw(10) << "Score"
+         << "Date" << endl;
+    cout << "------------------------------------------------------------------------\n";
 
     for(int i = 0; i < min(10, (int)currentLeaderboard->size()); i++) {
         cout << left
              << setw(5) << i + 1
              << setw(15) << (*currentLeaderboard)[i].name
              << setw(10) << (*currentLeaderboard)[i].score
-             << setw(30) << (*currentLeaderboard)[i].date;
+             << setw(15) << "AI"
+             << setw(10) << (*currentLeaderboard)[i].score2
+             << (*currentLeaderboard)[i].date;
+
         cout << endl;
         cout << endl;
     }
@@ -1223,6 +1232,7 @@ void attackPhase(int mapBattleShipOne[9][11], int mapBattleShipTwo[9][11], int &
             score2 += 20;
             if (AIorVS == "AI")
                 aiShip--;
+                score -= 20;
 
             cout << 17 - plyrTwoPoint << " more points to go!";
         } else {
