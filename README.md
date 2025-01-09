@@ -215,5 +215,44 @@ untuk menghasilkan koordinat pada ai sesuai dengan difficulty nya masing - masin
 # PROCEDURE PositioningShips
 untuk menu pemilihan setup kapal dan juga untuk memastikan bahwa kapal benar - benar di setup sepenuhnya.
 
+# STRUCT PlayerScore
+untuk meng-group agar vector dibawah ini bisa jalan. 
+
+```
+vector<PlayerScore> easyLeaderboard;
+vector<PlayerScore> mediumLeaderboard;
+vector<PlayerScore> hardLeaderboard;
+vector<PlayerScore> gacorLeaderboard;
+vector<PlayerScore> versusHistory;
+```
+
+# PROCEDURE loadLeaderboard
+untuk membuka file leaderboard AI dan Versus, serta sorting dari urutannya dan maksimal top 10.
+
+# PROCEDURE saveLeaderboard
+untuk mengsave hasil dengan format yang ditentukan.
+
+# PROCEDURE initializeLeaderboards
+untuk membuka file - file leaderboard.
+
+# PROCEDURE getUsername
+untuk meminta username pada player dan mengreturn username tersebut.
+
+# PROCEDURE addToLeaderboard
+untuk mendapatkan nama dan menyimpan nama,skor,skorAI,waktu,dll.
+
+# PROCEDURE addToLeaderboard (2)
+untuk mendapatkan nama dan menyimpan nama,skor,waktu,dll.
+
+# PROCEDURE displayLeaderboard
+untuk mendisplay leaderboard di console.
+
+# PROCEDURE displayHistory
+untuk mendisplay history AI di console.
+
+# PROCEDURE displayHistoryVersus
+untuk mendisplay history khusus versus di console.
+
 # PROCEDURE attackPhase
 untuk memproses giliran dalam menebak koordinat kapal, untuk memproses pengamilan x dan y, perubahan symbol koordinat pada map, memberikan text keterangan kapal tidak ada ataupun tersisa berapa koordinat lagi yang harus di tebak, dan pengecekan untuk invalid coordinates.
+
