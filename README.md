@@ -1079,23 +1079,264 @@ vector<PlayerScore> versusHistory;
 # PROCEDURE loadLeaderboard
 untuk membuka file leaderboard AI dan Versus, serta sorting dari urutannya dan maksimal top 10.
 
+```
+void loadLeaderboard(vector<PlayerScore>& leaderboard, string type) {
+    ifstream file("leaderboard_" + type + ".txt");
+    if(file.is_open()) {
+        leaderboard.clear();
+        string line;
+        while(getline(file, line)) {
+            try {
+                PlayerScore score;
+                size_t pos1 = line.find(",");
+                if(pos1 == string::npos) continue;
+
+                size_t pos2 = line.find(",", pos1 + 1);
+                if(pos2 == string::npos) continue;
+
+                if(type == "versus") {
+
+                    score.name = line.substr(0, pos1);
+                    score.score = stoi(line.substr(pos1 + 1, pos2 - pos1 - 1));
+
+                    string remainingData = line.substr(pos2 + 1);
+                    size_t commaPos = remainingData.find(",");
+                    if(commaPos != string::npos) {
+                        score.name2 = remainingData.substr(0, commaPos);
+                        remainingData = remainingData.substr(commaPos + 1);
+
+                        commaPos = remainingData.find(",");
+                        if(commaPos != string::npos) {
+                            score.score2 = stoi(remainingData.substr(0, commaPos));
+                            score.date = remainingData.substr(commaPos + 1);
+                        }
+                    }
+                } else {
+
+                    score.name = line.substr(0, pos1);
+                    score.score = stoi(line.substr(pos1 + 1, pos2 - pos1 - 1));
+                    score.date = line.substr(pos2 + 1);
+                }
+
+                score.isVersusMode = (type == "versus");
+                leaderboard.push_back(score);
+            } catch(const std::exception& e) {
+                continue;
+            }
+        }
+        file.close();
+
+        if(type == "versus") {
+            sort(leaderboard.begin(), leaderboard.end(),
+                 [](const PlayerScore& a, const PlayerScore& b) {
+                     return (a.score + a.score2) > (b.score + b.score2);
+                 });
+        } else {
+            sort(leaderboard.begin(), leaderboard.end(),
+                 [](const PlayerScore& a, const PlayerScore& b) {
+                     return a.score > b.score;
+                 });
+        }
+    }
+}
+```
+
 # PROCEDURE saveLeaderboard
 untuk mengsave hasil dengan format yang ditentukan.
+
+```
+void saveLeaderboard(const vector<PlayerScore>& leaderboard, string type) {
+    ofstream file("leaderboard_" + type + ".txt");
+    if(file.is_open()) {
+        for(const auto& score : leaderboard) {
+            if(type == "versus") {
+                file << score.name << ","
+                     << score.score << ","
+                     << score.name2 << ","
+                     << score.score2 << ","
+                     << score.date << "\n";
+            } else {
+                file << score.name << ","
+                     << score.score << ","
+                     << score.date << "\n";
+            }
+        }
+        file.close();
+    }
+}
+```
 
 # PROCEDURE initializeLeaderboards
 untuk membuka file - file leaderboard.
 
+```
+void initializeLeaderboards() {
+    loadLeaderboard(easyLeaderboard, "easy");
+    loadLeaderboard(mediumLeaderboard, "medium");
+    loadLeaderboard(hardLeaderboard, "hard");
+    loadLeaderboard(gacorLeaderboard, "gacor");
+    loadLeaderboard(versusHistory, "versus");
+}
+```
+
 # PROCEDURE getUsername
 untuk meminta username pada player dan mengreturn username tersebut.
+```
+string getUsername(string establishPlayer) {
+    string username;
+    bool validUsername = false;
+
+    while (!validUsername) {
+        system("cls");
+        cout << "====== Enter Your Username ======\n\n";
+        cout << establishPlayer << " (3-15 characters): ";
+        cin >> username;
+
+        if (username.length() < 3 || username.length() > 15) {
+            cout << "\nUsername must be between 3 and 15 characters!\n";
+            Sleep(1500);
+            continue;
+        }
+
+        bool hasInvalidChar = false;
+        for (char c : username) {
+            if (!isalnum(c)) {
+                hasInvalidChar = true;
+                break;
+            }
+        }
+
+        if (hasInvalidChar) {
+            cout << "\nUsername can only contain letters and numbers!\n";
+            Sleep(1500);
+            continue;
+        }
+
+        validUsername = true;
+    }
+
+    return username;
+}
+```
 
 # PROCEDURE addToLeaderboard
 untuk mendapatkan nama dan menyimpan nama,skor,skorAI,waktu,dll.
 
+```
+void addToLeaderboard(string name, int playerScore, string difficulty) {
+    PlayerScore newScore;
+    newScore.name = name;
+    newScore.score = playerScore;
+    newScore.name2 = "AI";
+    newScore.score2 = 340 - playerScore;
+
+    time_t now = time(0);
+    char* dt = ctime(&now);
+    newScore.date = dt;
+    newScore.isVersusMode = false;
+
+    vector<PlayerScore>* targetLeaderboard = nullptr;
+    string saveType;
+
+    if(difficulty == "Easy") {
+        targetLeaderboard = &easyLeaderboard;
+        saveType = "easy";
+    } else if(difficulty == "Medium") {
+        targetLeaderboard = &mediumLeaderboard;
+        saveType = "medium";
+    } else if(difficulty == "Hard") {
+        targetLeaderboard = &hardLeaderboard;
+        saveType = "hard";
+    } else if(difficulty == "Gacor") {
+        targetLeaderboard = &gacorLeaderboard;
+        saveType = "gacor";
+    }
+
+    if(targetLeaderboard != nullptr) {
+        targetLeaderboard->push_back(newScore);
+        sort(targetLeaderboard->begin(), targetLeaderboard->end(),
+             [](const PlayerScore& a, const PlayerScore& b) {
+                 return a.score > b.score;
+             });
+        saveLeaderboard(*targetLeaderboard, saveType);
+    }
+}
+
+```
+
 # PROCEDURE addToLeaderboard (2)
 untuk mendapatkan nama dan menyimpan nama,skor,waktu,dll.
 
+```
+void addToLeaderboard(string name1, int score1, string name2, int score2, string difficulty) {
+    PlayerScore newScore;
+    newScore.name = name1;
+    newScore.score = score1;
+    newScore.name2 = name2;
+    newScore.score2 = score2;
+
+    time_t now = time(0);
+    char* dt = ctime(&now);
+    newScore.date = dt;
+    newScore.isVersusMode = true;
+
+    if(difficulty == "Versus") {
+        versusHistory.push_back(newScore);
+        sort(versusHistory.begin(), versusHistory.end(),
+             [](const PlayerScore& a, const PlayerScore& b) {
+                 return (a.score + a.score2) > (b.score + b.score2);
+             });
+        saveLeaderboard(versusHistory, "versus");
+    }
+}
+```
+
 # PROCEDURE displayLeaderboard
 untuk mendisplay leaderboard di console.
+
+```
+void displayLeaderboard(string difficulty) {
+    vector<PlayerScore>* currentLeaderboard;
+    string difficultyTitle;
+
+    if(difficulty == "Easy") {
+        currentLeaderboard = &easyLeaderboard;
+        difficultyTitle = "\033[92mBEGINNER MODE\033[0m";
+    } else if(difficulty == "Medium") {
+        currentLeaderboard = &mediumLeaderboard;
+        difficultyTitle = "\033[93mINTERMEDIATE MODE\033[0m";
+    } else if(difficulty == "Hard") {
+        currentLeaderboard = &hardLeaderboard;
+        difficultyTitle = "\033[95mADVANCED MODE\033[0m";
+    } else {
+        currentLeaderboard = &gacorLeaderboard;
+        difficultyTitle = "\033[91mGACOR !!!\033[0m";
+    }
+
+    cout << "====== LEADERBOARD - " << difficultyTitle << " ======\n\n";
+    cout << left << setw(5) << "Rank" << setw(15) << "Name" << setw(10) << "Score" << setw(30) << "Date" << endl;
+    cout << "---------------------------------------------------------------\n";
+
+    for(int i = 0; i < min(10, (int)currentLeaderboard->size()); i++) {
+        cout << left
+             << setw(5) << i + 1
+             << setw(15) << (*currentLeaderboard)[i].name
+             << setw(10) << (*currentLeaderboard)[i].score
+             << setw(30) << (*currentLeaderboard)[i].date;
+
+             cout << endl;
+             cout << endl;
+    }
+
+    if(currentLeaderboard->empty()) {
+        cout << "\nNo scores recorded yet!\n";
+    }
+
+    cout << "\nPress any key to continue...";
+    _getch();
+    system("cls");
+}
+```
 
 # PROCEDURE displayHistory
 untuk mendisplay history AI di console.
