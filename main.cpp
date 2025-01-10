@@ -1331,6 +1331,7 @@ int main()
     int leaderboardChoice,historyChoice;
 
     welcomeText();
+    Beep(500, 80);
 
     selectedOpt = 0;
     do {
@@ -1371,6 +1372,8 @@ int main()
                                                 int ctrAI = 0;
                                                 int ctrShip = 16;
                                                 int ctrSend = 0;
+                                                score = 0;
+                                                score2 = 0;
                                                 string attackAI;
 
                                                 do {
@@ -1442,7 +1445,7 @@ int main()
                                                     cout << lightBlue << "You " << defaultColor << "Win !!!";
                                                     Sleep(3000);
 
-                                                    currentPlayerName = getUsername("Player");
+                                                    currentPlayerName = getUsername("\033[094mPlayer\033[0m");
                                                     addToLeaderboard(currentPlayerName, score, "Easy");
 
                                                     system("cls");
@@ -1450,7 +1453,7 @@ int main()
                                                 } else if (ctrAI == 17){
                                                     cout << lightRed << "AI " << defaultColor << "Win !!!";
                                                     Sleep(3000);
-                                                    currentPlayerName = getUsername("Player");
+                                                    currentPlayerName = getUsername("\033[094mPlayer\033[0m");
                                                     addToLeaderboard(currentPlayerName, score, "Easy");
                                                     system("cls");
                                                     break;
@@ -1480,6 +1483,8 @@ int main()
                                                 int ctrAI = 0;
                                                 int ctrShip = 16;
                                                 int ctrSend = 0;
+                                                score = 0;
+                                                score2 = 0;
                                                 string attackAI;
 
                                                 do {
@@ -1550,14 +1555,14 @@ int main()
                                                 if(ctrWin1 == 17){
                                                     cout << lightBlue << "You " << defaultColor << "Win !!!";
                                                     Sleep(3000);
-                                                    currentPlayerName = getUsername("Player");
+                                                    currentPlayerName = getUsername("\033[094mPlayer\033[0m");
                                                     addToLeaderboard(currentPlayerName, score, "Medium");
                                                     system("cls");
                                                     break;
                                                 } else if (ctrAI == 17){
                                                     cout << lightRed << "AI " << defaultColor << "Win !!!";
                                                     Sleep(3000);
-                                                    currentPlayerName = getUsername("Player");
+                                                    currentPlayerName = getUsername("\033[094mPlayer\033[0m");
                                                     addToLeaderboard(currentPlayerName, score, "Medium");
                                                     system("cls");
                                                     break;
@@ -1587,6 +1592,8 @@ int main()
                                                 int ctrAI = 0;
                                                 int ctrShip = 16;
                                                 int ctrSend = 0;
+                                                score = 0;
+                                                score2 = 0;
                                                 string attackAI;
 
                                                 do {
@@ -1657,14 +1664,14 @@ int main()
                                                 if(ctrWin1 == 17){
                                                     cout << lightBlue << "You " << defaultColor << "Win !!!";
                                                     Sleep(3000);
-                                                    currentPlayerName = getUsername("Player");
+                                                    currentPlayerName = getUsername("\033[094mPlayer\033[0m");
                                                     addToLeaderboard(currentPlayerName, score, "Hard");
                                                     system("cls");
                                                     break;
                                                 } else if (ctrAI == 17){
                                                     cout << lightRed << "AI " << defaultColor << "Win !!!";
                                                     Sleep(3000);
-                                                    currentPlayerName = getUsername("Player");
+                                                    currentPlayerName = getUsername("\033[094mPlayer\033[0m");
                                                     addToLeaderboard(currentPlayerName, score, "Hard");
                                                     system("cls");
                                                     break;
@@ -1694,6 +1701,8 @@ int main()
                                                 int ctrWin1 = 0;
                                                 int ctrAI = 0;
                                                 int ctrShip = 16;
+                                                score = 0;
+                                                score2 = 0;
                                                 string attackAI;
 
                                                 do {
@@ -1764,14 +1773,14 @@ int main()
                                                 if(ctrWin1 == 17){
                                                     cout << lightBlue << "You " << defaultColor << "Win !!!";
                                                     Sleep(3000);
-                                                    currentPlayerName = getUsername("Player");
+                                                    currentPlayerName = getUsername("\033[094mPlayer\033[0m");
                                                     addToLeaderboard(currentPlayerName, score, "Gacor");
                                                     system("cls");
                                                     break;
                                                 } else if (ctrAI == 17){
                                                     cout << lightRed << "AI " << defaultColor << "Win !!!";
                                                     Sleep(3000);
-                                                    currentPlayerName = getUsername("Player");
+                                                    currentPlayerName = getUsername("\033[094mPlayer\033[0m");
                                                     addToLeaderboard(currentPlayerName, score, "Gacor");
                                                     system("cls");
                                                     break;
@@ -1817,6 +1826,8 @@ int main()
                                     int ctrWin1 = 0;
                                     int ctrWin2 = 0;
                                     int ctrShip;
+                                    score = 0;
+                                    score2 = 0;
 
                                     do {
                                         cout << " =======   VS " << lightRed << "BATTLE" << lightBlue << "SHIP"<< defaultColor << "   =======\n" << endl;
@@ -1886,8 +1897,8 @@ int main()
                                         cout << lightBlue << "Player 1 " << defaultColor << "Win !!!";
                                         Sleep(3000);
 
-                                        string player1Name = getUsername("Player 1");
-                                        string player2Name = getUsername("Player 2");
+                                        string player1Name = getUsername("\033[094mPlayer 1\033[0m");
+                                        string player2Name = getUsername("\033[091mPlayer 2\033[0m");
 
                                         addToLeaderboard(player1Name, score, player2Name, score2, "Versus");
 
@@ -1897,8 +1908,8 @@ int main()
                                         cout << lightRed << "Player 2 " << defaultColor << "Win !!!";
                                         Sleep(3000);
 
-                                        string player1Name = getUsername("Player 1");
-                                        string player2Name = getUsername("Player 2");
+                                        string player1Name = getUsername("\033[094mPlayer 1\033[0m");
+                                        string player2Name = getUsername("\033[091mPlayer 2\033[0m");
 
                                         addToLeaderboard(player1Name, score, player2Name, score2, "Versus");
 
