@@ -29,11 +29,6 @@
 </p>
 
 # Penjelasan Game Battleship
-
-<p align="center">
-<img src="assets_readme/img/bluemap.png"/>
-<img src="assets_readme/img/redmap.png"/>
-</p>
 Game ini memiliki lebar map permainan yaitu 7 x 9 dan memiliki 5 macam kapal dalam permainan yaitu :
 
 * Berwarna Merah ( 1 x 2 ) : Destroyer Ship
@@ -41,6 +36,11 @@ Game ini memiliki lebar map permainan yaitu 7 x 9 dan memiliki 5 macam kapal dal
 * Berwarna Kuning ( 1 x 3 ) : Cruiser Ship
 * Berwarna Biru ( 1 x 4 ) : Battle Ship
 * Berwarna Ungu ( 1 x 5 ) : Carrier Ship
+
+<p align="center">
+<img src="assets_readme/img/bluemap.png"/>
+<img src="assets_readme/img/redmap.png"/>
+</p>
 
 <p align="center">
 <img src="assets_readme/img/ship.png"/>
